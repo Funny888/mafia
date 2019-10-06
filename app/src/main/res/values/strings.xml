@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">Mafia</string>
+    <string name="btn_ok">В бой!</string>
+    <string name="game">Играть</string>
+    <string name="result">Результаты</string>
+    <string name="settigs">Настройки</string>
+    <string name="how_to_game">Как играть</string>
+    <string name="about_game">Об игре</string>
+    <string name="version">Версия игры: %1$s</string>
+    <string name="time_count_down">Обратный отсчет: \n%s</string>
+    <string name="text_dialog">Получаем роль...</string>
+    <string name="civilian">Мирный гражданин</string>
+    <string name="mafia">Мафия</string>
+
+
+    <string name="rule_game">\t В принципе в игре все решает смена суток: наступает ночь — просыпается мафия.\n\n
+        \t Во время ночи все игроки закрывают глаза, и только мафия остается с открытыми.\n\n
+        \t Знаками мафия договаривается, кого из мирных жителей они убивают.\n Затем мафия засыпает вместе с горожанами, и наступает день.\n\n
+        \t Все открывают глаза. Ведущий сообщает, что одного из жителей убила мафия (убитый покидает игру).\n\n
+        \t Теперь задача игроков — вычислить преступников.</string>
+
+    <string-array name="naputstvie">
+        <item>Приветствую тебя мой друг! \n</item>>
+        <item>Ты попал в игру "Мафия". \n </item>>
+        <item>Игра, где ты можешь найти и расправиться с преступной группировкой и изгнать нечесть из города! \n</item>
+        <item>Ну что, ты готов  совершить правосудие? \n</item>
+        <item>Тогда выживи, если сможешь! \n</item>
+    </string-array>
+</resources>
