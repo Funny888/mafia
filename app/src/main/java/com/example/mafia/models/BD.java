@@ -3,6 +3,7 @@ package com.example.mafia.models;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -13,7 +14,10 @@ import com.example.mafia.utils.MyObserver;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -28,10 +32,12 @@ public class BD {
     public static final String isDead = "isDead";
     ArrayList<RoleModel> mPlayers = new ArrayList<>();
     private MutableLiveData<RoleModel> mRoleMutable = new MutableLiveData();
+    private MutableLiveData<Integer> mFreePlace = new MutableLiveData();
     private MyObservable setRoom = new MyObservable();
     private MyObserver mGetRoom;
     private MyObserver mGetPlayers;
     private MyObserver mResetRoles;
+    private MyObserver mGetFreePlace;
     private Context mContext;
 
     private FirebaseFirestore firestore = FirebaseFirestore.getInstance();
@@ -75,6 +81,7 @@ public class BD {
                         flag = true;
                         setRoom.attach(mGetPlayers);
                         setRoom.attach(mGetRoom);
+                        setRoom.attach(mGetFreePlace);
                         setRoom.setValue(result);
                         System.out.println(result.getId());
                     }
@@ -138,6 +145,29 @@ public class BD {
         };
 
         return mRoleMutable;
+    }
+
+    public LiveData<Integer> getFreePlace(){
+        mGetFreePlace = new MyObserver() {
+            @Override
+            public void result(Object obj) {
+                super.result(obj);
+                DocumentSnapshot result = (DocumentSnapshot) obj;
+                result.getReference().collection(Roles).addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                        int free = queryDocumentSnapshots.size();
+                        for (QueryDocumentSnapshot query: queryDocumentSnapshots) {
+                            if (query.getBoolean(isBusy))
+                                free--;
+                            System.out.println("free places: " + free);
+                        }
+                        mFreePlace.postValue(free);
+                    }
+                });
+            }
+        };
+        return mFreePlace;
     }
 
 

@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.DialogCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -45,6 +46,7 @@ public class Game extends AppCompatActivity implements OnFinished {
     private RolesRecycler mAdapter;
     private RecyclerView mRecyclerView;
     private LiveData<RoleModel> mGetRole;
+    private LiveData<Integer> mFreePlace;
     private Chronometer mTime;
     private BD bd;
 
@@ -60,11 +62,21 @@ public class Game extends AppCompatActivity implements OnFinished {
         mBinding.setModel(mModel);
         bd.getRoom();
         mGetRole = bd.getRole();
+        mFreePlace = bd.getFreePlace();
         mGetRole.observe(this, (role) -> {
             mModel.setActor(role.getRoleName());
             mModel.showDialogLoader(false);
+            mModel.showDialogFreePlaces(true,mFreePlace.getValue());
             Toast.makeText(getBaseContext(),mModel.getActor(),Toast.LENGTH_LONG).show();
         });
+       mFreePlace.observe(this, new Observer<Integer>() {
+           @Override
+           public void onChanged(Integer integer) {
+               if (integer.equals(0))
+                   mModel.showDialogFreePlaces(false,integer);
+           }
+       });
+
         mRecyclerView.setAdapter(mAdapter);
         //runRole();
 

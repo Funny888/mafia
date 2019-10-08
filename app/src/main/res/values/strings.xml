@@ -9,6 +9,7 @@
     <string name="version">Версия игры: %1$s</string>
     <string name="time_count_down">Обратный отсчет: \n%s</string>
     <string name="text_dialog">Получаем роль...</string>
+    <string name="count_free_place">Cвободных мест:\n %1$d</string>
     <string name="civilian">Мирный гражданин</string>
     <string name="mafia">Мафия</string>
 
