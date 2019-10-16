@@ -11,6 +11,8 @@ import androidx.lifecycle.LiveData;
 
 import com.example.mafia.R;
 
+import java.util.ArrayList;
+
 
 public class GameModel extends BaseObservable {
     private Context mContext;
@@ -18,8 +20,10 @@ public class GameModel extends BaseObservable {
     private Boolean mIsShowRole;
     private Boolean mIsShowPlayers;
     private Dialog mDialog;
-
-    public GameModel(Context context){mContext = context; myDialog(R.layout.startdialog);}
+    private BD bd;
+    public GameModel(Context context){mContext = context; myDialog(R.layout.startdialog);
+        bd = BD.getInstance(mContext);
+    }
 
 
     public void setActor(String actor){
@@ -80,6 +84,22 @@ public class GameModel extends BaseObservable {
         mDialog.create();
         mDialog.getWindow().getDecorView().setBackgroundResource(android.R.color.transparent);
        // mDialog.setCancelable(false);
+    }
+
+    public void getRoom(){
+        bd.getRoom();
+    }
+
+    public LiveData<RoleModel> getRole(){
+        return bd.getRole();
+    }
+
+    public LiveData<Integer> getFreePlace(){
+        return bd.getFreePlace();
+    }
+
+    public ArrayList<RoleModel> getPlayers(){
+        return bd.getPlayers();
     }
 
 }

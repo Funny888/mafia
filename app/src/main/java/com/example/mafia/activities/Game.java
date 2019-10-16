@@ -4,8 +4,8 @@ import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
-import android.app.Dialog;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -14,9 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.DialogCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
@@ -30,6 +28,7 @@ import com.example.mafia.models.BD;
 import com.example.mafia.models.GameModel;
 import com.example.mafia.models.RoleModel;
 import com.example.mafia.models.RolesRecycler;
+import com.example.mafia.utils.SettingsUtils;
 import com.example.mafia.utils.TimerGame;
 import com.google.android.material.card.MaterialCardView;
 
@@ -48,7 +47,8 @@ public class Game extends AppCompatActivity implements OnFinished {
     private LiveData<RoleModel> mGetRole;
     private LiveData<Integer> mFreePlace;
     private Chronometer mTime;
-    private BD bd;
+
+    private TimerGame mTimeGame;
 
     public static final String TAG = Game.class.getSimpleName();
 
@@ -60,9 +60,9 @@ public class Game extends AppCompatActivity implements OnFinished {
         setContentView(R.layout.game);
         setUp();
         mBinding.setModel(mModel);
-        bd.getRoom();
-        mGetRole = bd.getRole();
-        mFreePlace = bd.getFreePlace();
+
+        mGetRole = mModel.getRole();
+        mFreePlace = mModel.getFreePlace();
         mGetRole.observe(this, (role) -> {
             mModel.setActor(role.getRoleName());
             mModel.showDialogLoader(false);
@@ -78,7 +78,7 @@ public class Game extends AppCompatActivity implements OnFinished {
        });
 
         mRecyclerView.setAdapter(mAdapter);
-        //runRole();
+        runRole();
 
     }
 
@@ -86,7 +86,7 @@ public class Game extends AppCompatActivity implements OnFinished {
         mBinding = DataBindingUtil.setContentView(this, R.layout.game);
         mModel = new GameModel(this);
         mModel.showDialogLoader(true);
-        bd = BD.getInstance(this);
+
         mTime = findViewById(R.id.time_the_game);
         mImageRole = findViewById(R.id.imageRole);
         mMyRole = findViewById(R.id.materialCardView);
@@ -94,8 +94,10 @@ public class Game extends AppCompatActivity implements OnFinished {
         mRecyclerView = findViewById(R.id.roleRecycler);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
-        mAdapter = new RolesRecycler(this,bd.getPlayers());
+        mAdapter = new RolesRecycler(this,mModel.getPlayers());
         timeGameCintroller(START);
+
+
 
     }
 
@@ -107,6 +109,10 @@ public class Game extends AppCompatActivity implements OnFinished {
                     @Override
                     public void run() {
                         mMyRole.setVisibility(View.VISIBLE);
+                        float scale = getBaseContext().getResources().getDisplayMetrics().density;
+                        mMyRole.setCameraDistance(4000 * scale);
+
+
                         AnimatorSet animatorStart = (AnimatorSet) AnimatorInflater.loadAnimator(Game.this, R.animator.flip_card_start);
                         AnimatorSet animatorStop = (AnimatorSet) AnimatorInflater.loadAnimator(Game.this, R.animator.flip_card_stop);
 
@@ -116,7 +122,7 @@ public class Game extends AppCompatActivity implements OnFinished {
                             @Override
                             public void onAnimationEnd(Animator animation, boolean isReverse) {
 
-                                mImageRole.setImageDrawable(mGetRole.getValue().getRoleDrawable());
+                                mImageRole.setImageDrawable(getDrawable(R.drawable.card_image_people));
                             }
                         });
                         animatorStop.addListener(new AnimatorListenerAdapter() {
@@ -126,10 +132,9 @@ public class Game extends AppCompatActivity implements OnFinished {
                                 mMyRole.postDelayed(() -> mMyRole.setVisibility(View.GONE),2000);
                             }
                         });
-                        animatorStop.setStartDelay(1500);
-                        animatorStop.start();
-                        animatorStart.setStartDelay(1000);
-                        animatorStart.start();
+                        AnimatorSet set = new AnimatorSet();
+                        set.playTogether(animatorStart,animatorStop);
+                        set.start();
                     }
                 });
             }
@@ -139,24 +144,30 @@ public class Game extends AppCompatActivity implements OnFinished {
 
 
     public void timeGameCintroller(Integer code){
-        TimerGame tGame = TimerGame.getInstance(mTime,this);
-        tGame.finalCountDown(this);
+        mTimeGame =  new TimerGame(mTime,this);
+        mTimeGame.finalCountDown(this);
         switch (code){
             case START:{
-                tGame.start();
+                mTimeGame.start();
                 break;
             }
             case STOP:{
-                tGame.stop();
+                mTimeGame.stop();
                 break;
             }
             case RESET:{
-                tGame.reset();
+                mTimeGame.reset();
                 break;
             }
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mTimeGame.stop();
+        SettingsUtils.getInstance().setTimeBase(mTimeGame.getmChronometer().getBase());
+    }
 
     @Override
     public void isFinish(Boolean bool) {

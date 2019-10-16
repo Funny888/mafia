@@ -12,7 +12,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.mafia.activities.Game"
-    android:background="@color/colorPrimary">
+    android:background="@color/colorPrimary"
+    android:focusableInTouchMode="true">
 
     <Chronometer
         android:id="@+id/time_the_game"
@@ -80,8 +81,7 @@
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:layout_gravity="bottom"
-            android:background="@color/colorEditText"
-            android:focusedByDefault="false"/>
+            android:background="@color/colorEditText"/>
 
         <TextView
             android:layout_width="match_parent"
