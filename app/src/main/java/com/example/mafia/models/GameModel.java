@@ -7,9 +7,12 @@ import android.widget.TextView;
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
 import androidx.databinding.library.baseAdapters.BR;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 
+import com.example.mafia.databases.FireStoreDB;
 import com.example.mafia.R;
+import com.example.mafia.utils.FabricDialogs;
 
 import java.util.ArrayList;
 
@@ -19,10 +22,12 @@ public class GameModel extends BaseObservable {
     private String mActor;
     private Boolean mIsShowRole;
     private Boolean mIsShowPlayers;
-    private Dialog mDialog;
-    private BD bd;
-    public GameModel(Context context){mContext = context; myDialog(R.layout.startdialog);
-        bd = BD.getInstance(mContext);
+    private FireStoreDB bd;
+    private FabricDialogs fabricDialogs = new FabricDialogs();
+
+
+    public GameModel(Context context){mContext = context;
+        bd = FireStoreDB.getInstance(mContext);
     }
 
 
@@ -60,30 +65,9 @@ public class GameModel extends BaseObservable {
         return this;
     }
 
-    public void showDialogLoader(boolean bool){
-     if (bool){
-         mDialog.show();
-     } else {
-         mDialog.cancel();
-     }
-    }
 
-    public void showDialogFreePlaces(Boolean bool,Integer free){
-        if (bool){
-            myDialog(R.layout.freeplacedialog);
-            ((TextView)mDialog.findViewById(R.id.free_count)).setText(String.format(mContext.getString(R.string.count_free_place),free));
-            mDialog.show();
-        } else {
-            mDialog.cancel();
-        }
-    }
-
-    private void myDialog(int viewId){
-        mDialog = new Dialog(mContext);
-        mDialog.setContentView(viewId);
-        mDialog.create();
-        mDialog.getWindow().getDecorView().setBackgroundResource(android.R.color.transparent);
-       // mDialog.setCancelable(false);
+    public void resetRoles(){
+        bd.resetRoleBusy();
     }
 
     public void getRoom(){
@@ -102,4 +86,7 @@ public class GameModel extends BaseObservable {
         return bd.getPlayers();
     }
 
+    public Fragment getDialog(int code){
+        return fabricDialogs.getDialog(code);
+    }
 }

@@ -1,14 +1,15 @@
-package com.example.mafia.models;
+package com.example.mafia.databases;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.mafia.R;
+import com.example.mafia.models.RoleModel;
 import com.example.mafia.utils.MyObservable;
 import com.example.mafia.utils.MyObserver;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -23,7 +24,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class BD {
+public class FireStoreDB {
+    public static final String TAG = FireStoreDB.class.getSimpleName();
+
     public static final String Rooms = "Rooms";
     public static final String Roles = "Roles";
     public static final String Id = "Id";
@@ -34,7 +37,7 @@ public class BD {
     private MutableLiveData<RoleModel> mRoleMutable = new MutableLiveData();
     private MutableLiveData<Integer> mFreePlace = new MutableLiveData();
     private MyObservable setRoom = new MyObservable();
-    private MyObserver mGetRoom;
+    private MyObserver mGetRole;
     private MyObserver mGetPlayers;
     private MyObserver mResetRoles;
     private MyObserver mGetFreePlace;
@@ -43,18 +46,18 @@ public class BD {
     private FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     private CollectionReference reference = firestore.collection(Rooms);
 
-    private static BD sInstance;
+    private static FireStoreDB sInstance;
 
-    private BD(Context ctx) {
+    private FireStoreDB(Context ctx) {
         mContext = ctx;
 
 
     }
 
 
-    public static BD getInstance(Context context) {
+    public static FireStoreDB getInstance(Context context) {
         if (sInstance == null) {
-            sInstance = new BD(context);
+            sInstance = new FireStoreDB(context);
         }
         return sInstance;
     }
@@ -69,6 +72,7 @@ public class BD {
     }
 
     public void getRoom() {
+        Log.d(TAG, "getRoom: ");
         reference.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -80,10 +84,15 @@ public class BD {
                     if (!result.getBoolean(isBusy)) {
                         flag = true;
                         setRoom.attach(mGetPlayers);
-                        setRoom.attach(mGetRoom);
+                        setRoom.attach(mGetRole);
+//                        setRoom.attach(mResetRoles);
                         setRoom.attach(mGetFreePlace);
                         setRoom.setValue(result);
                         System.out.println(result.getId());
+                        setRoom.dettach(mGetPlayers);
+                        setRoom.dettach(mGetRole);
+                        setRoom.dettach(mResetRoles);
+                        setRoom.dettach(mGetFreePlace);
                     }
                 }
             }
@@ -92,16 +101,17 @@ public class BD {
     }
 
     public void  resetRoleBusy(){
+        Log.d(TAG, "resetRoleBusy: ");
         mResetRoles = new MyObserver() {
             @Override
             public void result(Object obj) {
                 super.result(obj);
                 DocumentSnapshot result = (DocumentSnapshot) obj;
-                result.getReference().collection(Role).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                result.getReference().collection(Roles).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         for (DocumentSnapshot result : queryDocumentSnapshots.getDocuments()) {
-                            result.getReference().update(isBusy,true);
+                            result.getReference().update(isBusy,false);
                         }
 
                     }
@@ -111,8 +121,8 @@ public class BD {
     }
 
     public LiveData<RoleModel> getRole() {
-
-        mGetRoom = new MyObserver() {
+        Log.d(TAG, "getRole: ");
+        mGetRole = new MyObserver() {
             @Override
             public void result(Object obj) {
                 super.result(obj);
@@ -143,11 +153,11 @@ public class BD {
                 });
             }
         };
-
         return mRoleMutable;
     }
 
     public LiveData<Integer> getFreePlace(){
+        Log.d(TAG, "getFreePlace: ");
         mGetFreePlace = new MyObserver() {
             @Override
             public void result(Object obj) {
@@ -160,7 +170,7 @@ public class BD {
                         for (QueryDocumentSnapshot query: queryDocumentSnapshots) {
                             if (query.getBoolean(isBusy))
                                 free--;
-                            System.out.println("free places: " + free);
+                            System.out.println(free);
                         }
                         mFreePlace.postValue(free);
                     }
@@ -172,6 +182,7 @@ public class BD {
 
 
     public ArrayList<RoleModel> getPlayers() {
+        Log.d(TAG, "getPlayers: ");
         mGetPlayers = new MyObserver() {
             @Override
             public void result(Object obj) {
