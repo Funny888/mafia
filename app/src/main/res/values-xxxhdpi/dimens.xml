@@ -1,0 +1,17 @@
+<resources>
+	<dimen name="border">11.5dp</dimen>
+	<dimen name="splash_progress_margin_horizontal">147.2dp</dimen>
+	<dimen name="splash_progress_margin_top">345dp</dimen>
+	<dimen name="learn_motivate_height">805dp</dimen>
+	<dimen name="margin_standart_top">46dp</dimen>
+	<dimen name="result_title_margin_top">184dp</dimen>
+	<dimen name="role_width">299dp</dimen>
+	<dimen name="splash_image_margin_top">460dp</dimen>
+	<dimen name="gridview_margin_horizontal">23dp</dimen>
+	<dimen name="learn_motivate_width">690dp</dimen>
+	<dimen name="gridview_column_width">207dp</dimen>
+	<dimen name="learn_btn_ok_padding">36.8dp</dimen>
+	<dimen name="splash_image_size">552dp</dimen>
+	<dimen name="learn_motivate_margin_horizontal">92dp</dimen>
+	<dimen name="role_height">506dp</dimen>
+</resources>
