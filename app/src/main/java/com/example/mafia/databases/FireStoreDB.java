@@ -3,7 +3,6 @@ package com.example.mafia.databases;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -153,7 +152,6 @@ public class FireStoreDB {
                             free--;
                     }
                     mFreePlace.postValue(free);
-
                 });
             }
         };

@@ -3,7 +3,6 @@ package com.example.mafia;
 
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
-
 import androidx.databinding.BindingAdapter;
 
 public class Bind {

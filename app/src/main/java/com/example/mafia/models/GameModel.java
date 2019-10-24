@@ -72,7 +72,6 @@ public class GameModel extends BaseObservable {
         return mIdImage;
     }
 
-
     public void setIsShowPlayers(Boolean show){
         mIsShowPlayers = show;
         notifyPropertyChanged(BR.isShowPlayers);

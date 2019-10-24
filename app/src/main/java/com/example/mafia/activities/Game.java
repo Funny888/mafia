@@ -49,9 +49,6 @@ public class Game extends AppCompatActivity implements OnFinished {
     private TimerGame mTimeGame;
     private FragmentTransaction mFrame;
     private AnimationUtils mAnimation;
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,6 +95,7 @@ public class Game extends AppCompatActivity implements OnFinished {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
         mAdapter = new RolesRecycler(this,mModel.getPlayers());
+
         mAnimation = new AnimationUtils(this);
         timeGameCintroller(START);
     }
