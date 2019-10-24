@@ -50,10 +50,7 @@ public class FireStoreDB {
 
     private FireStoreDB(Context ctx) {
         mContext = ctx;
-
-
     }
-
 
     public static FireStoreDB getInstance(Context context) {
         if (sInstance == null) {
@@ -61,7 +58,6 @@ public class FireStoreDB {
         }
         return sInstance;
     }
-
 
     private int rand(QuerySnapshot queryDocumentSnapshots) {
         int max = queryDocumentSnapshots.size();

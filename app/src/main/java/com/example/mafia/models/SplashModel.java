@@ -5,18 +5,17 @@ import androidx.databinding.Bindable;
 import androidx.databinding.library.baseAdapters.BR;
 
 
-
 public class SplashModel extends BaseObservable {
-   private int mLoadProgress;
 
+    private int mLoadProgress;
 
-    public void setLoad(int load){
+    public void setLoad(int load) {
         mLoadProgress = load;
         notifyPropertyChanged(BR.load);
     }
 
     @Bindable
-    public int getLoad(){
+    public int getLoad() {
         return mLoadProgress;
     }
 }

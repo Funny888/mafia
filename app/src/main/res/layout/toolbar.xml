@@ -3,13 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
-    app:titleTextAppearance="@style/TextStyle"
-    android:layout_height="?attr/actionBarSize">
-<TextView
-    android:id="@+id/txt_title"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    android:layout_marginEnd="?attr/actionBarSize"
-    android:textSize="22sp" />
+    android:layout_height="?attr/actionBarSize"
+    app:titleTextAppearance="@style/TextStyle">
+
+    <TextView
+        android:id="@+id/txt_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="?attr/actionBarSize"
+        android:gravity="center"
+        android:textSize="22sp" />
 </androidx.appcompat.widget.Toolbar>

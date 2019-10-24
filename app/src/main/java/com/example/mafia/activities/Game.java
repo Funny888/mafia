@@ -9,23 +9,19 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Chronometer;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mafia.R;
-import com.example.mafia.databinding.GameBinding;
-import com.example.mafia.fragments.Dialog_Freeplace;
+import com.example.mafia.databinding.FragmentGameBinding;
 import com.example.mafia.fragments.Dialog_Loader;
 import com.example.mafia.interfaces.OnFinished;
 import com.example.mafia.models.GameModel;
@@ -44,7 +40,7 @@ public class Game extends AppCompatActivity implements OnFinished {
     private TextView mRole;
     private ImageView mImageRole;
     private MaterialCardView mMyRole;
-    private GameBinding mBinding;
+    private FragmentGameBinding mBinding;
     private RolesRecycler mAdapter;
     private RecyclerView mRecyclerView;
     private LiveData<RoleModel> mGetRole;
@@ -61,7 +57,7 @@ public class Game extends AppCompatActivity implements OnFinished {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.game);
+        setContentView(R.layout.fragment_game);
         setUp();
         mBinding.setModel(mModel);
         mModel.getRoom();
@@ -89,7 +85,7 @@ public class Game extends AppCompatActivity implements OnFinished {
 
 
     private void setUp(){
-        mBinding = DataBindingUtil.setContentView(this, R.layout.game);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.fragment_game);
         mModel = new GameModel(this);
 
 
@@ -134,7 +130,7 @@ public class Game extends AppCompatActivity implements OnFinished {
                         animatorStop.addListener(new AnimatorListenerAdapter() {
                             @Override
                             public void onAnimationEnd(Animator animation) {
-                                mBinding.getModel().setIsShowRole(true);
+                              //  mBinding.getModel().setIsShowRole(true);
                                 mMyRole.postDelayed(() -> mMyRole.setVisibility(View.GONE),2000);
                             }
                         });
