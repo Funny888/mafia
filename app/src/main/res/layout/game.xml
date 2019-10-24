@@ -90,12 +90,13 @@
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/materialCardView"
+        android:id="@+id/card_role"
         android:layout_width="@dimen/role_width"
         android:layout_height="@dimen/role_height"
         android:layout_gravity="center"
+        app:cardBackgroundColor="#90ffffff"
         app:cardCornerRadius="8dp"
-        android:visibility="gone"
+        android:visibility="@{model.showCardRole?View.VISIBLE:View.GONE}"
         app:layout_constraintBottom_toBottomOf="@+id/materialCardView2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -107,7 +108,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:src="@drawable/card_front" />
+            android:src="@drawable/card_front"
+            app:setImage="@{model.backImage}"
+            app:getIdImage="@{model.idImage}"
+            />
 
     </com.google.android.material.card.MaterialCardView>
 
