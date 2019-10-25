@@ -21,7 +21,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mafia.R;
-import com.example.mafia.databinding.FragmentGameBinding;
+import com.example.mafia.animations.AnimationUtils;
+import com.example.mafia.databinding.GameBinding;
 import com.example.mafia.fragments.Dialog_Loader;
 import com.example.mafia.interfaces.OnFinished;
 import com.example.mafia.models.GameModel;
@@ -32,32 +33,28 @@ import com.example.mafia.utils.TimerGame;
 import com.google.android.material.card.MaterialCardView;
 
 public class Game extends AppCompatActivity implements OnFinished {
+    public static final String TAG = Game.class.getSimpleName();
+
     public static final int START = 1;
     public static final int STOP = 2;
     public static final int RESET = 0;
 
     private GameModel mModel;
-    private TextView mRole;
-    private ImageView mImageRole;
     private MaterialCardView mMyRole;
-    private FragmentGameBinding mBinding;
+    private GameBinding mBinding;
     private RolesRecycler mAdapter;
     private RecyclerView mRecyclerView;
     private LiveData<RoleModel> mGetRole;
-    private LiveData<Integer> mFreePlace;
     private Chronometer mTime;
-    private Dialog_Loader dialog_loader;
     private TimerGame mTimeGame;
     private FragmentTransaction mFrame;
-
-    public static final String TAG = Game.class.getSimpleName();
-
+    private AnimationUtils mAnimation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.fragment_game);
+        setContentView(R.layout.game);
         setUp();
         mBinding.setModel(mModel);
         mModel.getRoom();
@@ -69,6 +66,9 @@ public class Game extends AppCompatActivity implements OnFinished {
         mGetRole = mModel.getRole();
         mGetRole.observe(this, (role) -> {
             mModel.setActor(role.getRoleName());
+            mModel.setIdImage(role.getRoleDrawable());
+            mAnimation.animationRole(mModel,mMyRole);
+            //TODO run mFrame after end animation
             mFrame = getSupportFragmentManager().beginTransaction();
             mFrame.replace(R.id.ShowDialog, mModel.getDialog(2)).commit();
             Toast.makeText(getBaseContext(),mModel.getActor(),Toast.LENGTH_LONG).show();
@@ -79,74 +79,30 @@ public class Game extends AppCompatActivity implements OnFinished {
             }
         });
         mRecyclerView.setAdapter(mAdapter);
-     //   runRole();
 
     }
 
 
     private void setUp(){
-        mBinding = DataBindingUtil.setContentView(this, R.layout.fragment_game);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.game);
         mModel = new GameModel(this);
 
 
         dialog_loader();
         mTime = findViewById(R.id.time_the_game);
-        mImageRole = findViewById(R.id.imageRole);
-        mMyRole = findViewById(R.id.materialCardView);
-        mRole = findViewById(R.id.role);
+        mMyRole = findViewById(R.id.card_role);
         mRecyclerView = findViewById(R.id.roleRecycler);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
         mAdapter = new RolesRecycler(this,mModel.getPlayers());
+
+        mAnimation = new AnimationUtils(this);
         timeGameCintroller(START);
-
-
     }
-
-    private void runRole() {
-        mMyRole.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mMyRole.setVisibility(View.VISIBLE);
-                        float scale = getBaseContext().getResources().getDisplayMetrics().density;
-                        mMyRole.setCameraDistance(4000 * scale);
-
-
-                        AnimatorSet animatorStart = (AnimatorSet) AnimatorInflater.loadAnimator(Game.this, R.animator.flip_card_start);
-                        AnimatorSet animatorStop = (AnimatorSet) AnimatorInflater.loadAnimator(Game.this, R.animator.flip_card_stop);
-
-                        animatorStart.setTarget(mMyRole);
-                        animatorStop.setTarget(mMyRole);
-                        animatorStart.addListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation, boolean isReverse) {
-
-                                mImageRole.setImageDrawable(getDrawable(R.drawable.card_image_people));
-                            }
-                        });
-                        animatorStop.addListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                              //  mBinding.getModel().setIsShowRole(true);
-                                mMyRole.postDelayed(() -> mMyRole.setVisibility(View.GONE),2000);
-                            }
-                        });
-                        AnimatorSet set = new AnimatorSet();
-                        set.playTogether(animatorStart,animatorStop);
-                        set.start();
-                    }
-                });
-            }
-        }, 4000);
-    }
-
 
     public void dialog_loader(){
         mFrame = getSupportFragmentManager().beginTransaction();
-                mFrame.replace(R.id.ShowDialog,mModel.getDialog(1)).commit();
+        mFrame.replace(R.id.ShowDialog,mModel.getDialog(1)).commit();
     }
 
     public void timeGameCintroller(Integer code){

@@ -1,8 +1,7 @@
 package com.example.mafia.models;
 
-import android.app.Dialog;
 import android.content.Context;
-import android.widget.TextView;
+import android.graphics.drawable.Drawable;
 
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
@@ -11,7 +10,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 
 import com.example.mafia.databases.FireStoreDB;
-import com.example.mafia.R;
 import com.example.mafia.utils.FabricDialogs;
 
 import java.util.ArrayList;
@@ -22,6 +20,9 @@ public class GameModel extends BaseObservable {
     private String mActor;
     private Boolean mIsShowRole;
     private Boolean mIsShowPlayers;
+    private Boolean mIsShowCardRole;
+    private Boolean mBackImage = false;
+    private Drawable mIdImage;
     private FireStoreDB bd;
     private FabricDialogs fabricDialogs = new FabricDialogs();
 
@@ -51,6 +52,26 @@ public class GameModel extends BaseObservable {
         return mIsShowRole;
     }
 
+    public void setShowCardRole(Boolean show){
+        mIsShowCardRole = show;
+        notifyPropertyChanged(BR.showCardRole);
+    }
+
+    @Bindable
+    public Boolean getShowCardRole(){
+        return mIsShowCardRole;
+    }
+
+    public void setIdImage(Drawable show){
+        mIdImage = show;
+        notifyPropertyChanged(BR.idImage);
+    }
+
+    @Bindable
+    public Drawable getIdImage(){
+        return mIdImage;
+    }
+
     public void setIsShowPlayers(Boolean show){
         mIsShowPlayers = show;
         notifyPropertyChanged(BR.isShowPlayers);
@@ -60,6 +81,17 @@ public class GameModel extends BaseObservable {
     public Boolean getIsShowPlayers(){
         return mIsShowPlayers;
     }
+
+    public void setBackImage(Boolean show){
+        mBackImage = show;
+        notifyPropertyChanged(BR.backImage);
+    }
+
+    @Bindable
+    public Boolean getBackImage(){
+        return mBackImage;
+    }
+
 
     public GameModel getModel(){
         return this;
