@@ -5,12 +5,9 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
@@ -18,7 +15,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.mafia.BuildConfig;
 import com.example.mafia.R;
 import com.example.mafia.databinding.FragmentAboutBinding;
-import com.example.mafia.viewmodel.AboutViewModel;
+import com.example.mafia.viewmodels.AboutViewModel;
 
 public class AboutFragment extends Fragment {
 

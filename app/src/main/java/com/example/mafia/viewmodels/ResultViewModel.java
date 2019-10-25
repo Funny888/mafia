@@ -1,4 +1,4 @@
-package com.example.mafia.viewmodel;
+package com.example.mafia.viewmodels;
 
 import android.app.Application;
 

@@ -12,6 +12,12 @@
         tools:layout="@layout/fragment_menu" />
 
     <fragment
+        android:id="@+id/navigation_auth"
+        android:name="com.example.mafia.view.AuthFragment"
+        android:label="@string/auth_menu"
+        tools:layout="@layout/fragment_auth" />
+
+    <fragment
         android:id="@+id/navigation_about"
         android:name="com.example.mafia.view.AboutFragment"
         android:label="@string/title_about"

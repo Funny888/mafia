@@ -14,7 +14,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.mafia.R;
 import com.example.mafia.databinding.FragmentHowBinding;
-import com.example.mafia.viewmodel.HowViewModel;
+import com.example.mafia.viewmodels.HowViewModel;
 
 public class HowFragment extends Fragment {
 

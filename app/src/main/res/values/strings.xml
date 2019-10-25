@@ -26,6 +26,7 @@
     <string name="title_learn">Learn</string>
     <string name="title_result">Result</string>
     <string name="title_splash">Splash</string>
+    <string name="auth_menu">Auth</string>
 
     <string-array name="naputstvie">
         <item>Приветствую тебя мой друг! \n</item>>

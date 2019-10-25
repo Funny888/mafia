@@ -13,7 +13,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.mafia.R;
 import com.example.mafia.databinding.FragmentGameBinding;
-import com.example.mafia.viewmodel.GameViewModel;
+import com.example.mafia.viewmodels.GameViewModel;
 
 public class GameFragment extends Fragment {
 

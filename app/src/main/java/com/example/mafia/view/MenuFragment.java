@@ -17,7 +17,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.mafia.R;
 import com.example.mafia.activities.Game;
 import com.example.mafia.databinding.FragmentMenuBinding;
-import com.example.mafia.viewmodel.MenuViewModel;
+import com.example.mafia.viewmodels.MenuViewModel;
 
 public class MenuFragment extends Fragment implements View.OnClickListener {
 

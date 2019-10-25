@@ -13,7 +13,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.mafia.R;
 import com.example.mafia.databinding.FragmentSplashBinding;
-import com.example.mafia.viewmodel.SplashViewModel;
+import com.example.mafia.viewmodels.SplashViewModel;
 
 public class SplashFragment extends Fragment {
 
@@ -25,8 +25,6 @@ public class SplashFragment extends Fragment {
         splashViewModel = ViewModelProviders.of(this).get(SplashViewModel.class);
         FragmentSplashBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_splash, container, false);
         binding.setModel(splashViewModel);
-
-        setHasOptionsMenu(false);
 
         splashViewModel.startInitialLoading();
 

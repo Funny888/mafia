@@ -1,17 +1,20 @@
 package com.example.mafia.models;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.mafia.R;
 import com.example.mafia.utils.Event;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class ApplicationState {
 
     private static ApplicationState sInstance;
     private Context mContext;
+    private SharedPreferences prefs = null;
 
     private ApplicationState(Context context) {
         mContext = context;
@@ -54,13 +57,25 @@ public class ApplicationState {
                         e.printStackTrace();
                     }
                 }
-                return i;
+                return null;
             }
 
             @Override
             protected void onPostExecute(Integer integer) {
                 super.onPostExecute(integer);
-                navFragmentLD.setValue(new Event<>(R.id.navigation_learn));
+                FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                if (mAuth.getCurrentUser() != null) {
+                    prefs = mContext.getSharedPreferences("com.example.mafia", Context.MODE_PRIVATE);
+                    if (prefs.getBoolean("firstrun", true)) {
+                        prefs.edit().putBoolean("firstrun", false).commit();
+                        navFragmentLD.setValue(new Event<>(R.id.navigation_learn));
+                    } else {
+                        navFragmentLD.setValue(new Event<>(R.id.navigation_menu));
+                    }
+                } else {
+                    navFragmentLD.setValue(new Event<>(R.id.navigation_auth));
+                }
+
             }
         }.execute();
 

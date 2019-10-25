@@ -6,7 +6,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.GridView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,7 +15,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.mafia.R;
 import com.example.mafia.databinding.FragmentResultBinding;
-import com.example.mafia.viewmodel.ResultViewModel;
+import com.example.mafia.viewmodels.ResultViewModel;
 
 public class ResultFragment extends Fragment {
 

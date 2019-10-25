@@ -12,7 +12,7 @@ import androidx.navigation.Navigation;
 
 import com.example.mafia.R;
 import com.example.mafia.utils.Event;
-import com.example.mafia.viewmodel.MainViewModel;
+import com.example.mafia.viewmodels.MainViewModel;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -53,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
 
 
 }
