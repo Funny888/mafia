@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
+
 import androidx.databinding.library.baseAdapters.BR;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;

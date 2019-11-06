@@ -7,15 +7,19 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.mafia.R;
 import com.example.mafia.adpters.PreviewPagerAdapter;
 import com.example.mafia.databinding.FragmentLearnBinding;
+import com.example.mafia.interfaces.ISend;
 import com.example.mafia.viewmodels.LearnViewModel;
+import com.google.android.material.button.MaterialButton;
 
 public class LearnFragment extends Fragment {
 
@@ -27,15 +31,13 @@ public class LearnFragment extends Fragment {
         learnViewModel = ViewModelProviders.of(this).get(LearnViewModel.class);
         FragmentLearnBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_learn, container, false);
 
-        ViewPager viewPager = binding.viewpager;
-        viewPager.setAdapter(new PreviewPagerAdapter(inflater.getContext()));
 
-        binding.btnOk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                learnViewModel.navigateTo(R.id.navigation_menu);
-            }
-        });
+        PreviewPagerAdapter adapter = new PreviewPagerAdapter(inflater.getContext());
+
+        ViewPager2 viewPager = binding.viewpager;
+        viewPager.setAdapter(adapter);
+
+        adapter.setClick((click) -> click.setOnClickListener((c) -> learnViewModel.navigateTo(R.id.navigation_menu)));
 
         return binding.getRoot();
     }

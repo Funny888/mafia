@@ -37,6 +37,7 @@ public class FireStoreDB {
     private MyObserver mResetRoles;
     private MyObserver mGetFreePlace;
     private Context mContext;
+    private Boolean mFlagGetRoom;
 
     private FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     private CollectionReference reference = firestore.collection(Rooms);
@@ -45,6 +46,7 @@ public class FireStoreDB {
 
     private FireStoreDB(Context ctx) {
         mContext = ctx;
+        mFlagGetRoom = false;
     }
 
     public static FireStoreDB getInstance(Context context) {
@@ -65,13 +67,11 @@ public class FireStoreDB {
     public void getRoom() {
         Log.d(TAG, "getRoom: ");
         reference.get().addOnSuccessListener((queryDocumentSnapshots) -> {
-
-            boolean flag = false;
             DocumentSnapshot result = null;
-            while (!flag) {
+            while (!mFlagGetRoom) {
                 result = queryDocumentSnapshots.getDocuments().get(rand(queryDocumentSnapshots));
                 if (!result.getBoolean(isBusy)) {
-                    flag = true;
+                    mFlagGetRoom = true;
                     setRoom.attach(mGetPlayers);
                     setRoom.attach(mGetRole);
 //                        setRoom.attach(mResetRoles);
@@ -105,7 +105,7 @@ public class FireStoreDB {
         };
     }
 
-    public LiveData<RoleModel> getRole() {
+    public MutableLiveData <RoleModel> getRole() {
         Log.d(TAG, "getRole: ");
         mGetRole = new MyObserver() {
             @Override
@@ -134,7 +134,7 @@ public class FireStoreDB {
         return mRoleMutable;
     }
 
-    public LiveData<Integer> getFreePlace() {
+    public MutableLiveData <Integer> getFreePlace() {
         Log.d(TAG, "getFreePlace: ");
         mGetFreePlace = new MyObserver() {
             @Override
