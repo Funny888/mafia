@@ -9,11 +9,14 @@ import androidx.databinding.Bindable;
 import androidx.databinding.library.baseAdapters.BR;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.mafia.databases.FireStoreDB;
+import com.example.mafia.network.NetworkUtils;
 import com.example.mafia.utils.FabricDialogs;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class GameModel extends BaseObservable {
@@ -26,6 +29,7 @@ public class GameModel extends BaseObservable {
     private Drawable mIdImage;
     private FireStoreDB bd;
     private FabricDialogs fabricDialogs = new FabricDialogs();
+    private NetworkUtils networkUtils = new NetworkUtils();
 
 
     public GameModel(Context context){mContext = context;
@@ -122,4 +126,10 @@ public class GameModel extends BaseObservable {
     public Fragment getDialog(int code){
         return fabricDialogs.getDialog(code);
     }
+
+    public MutableLiveData<List<ChatModel>> getMessages(){
+
+        return networkUtils.showMessages();
+    }
+
 }

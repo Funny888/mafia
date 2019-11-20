@@ -70,18 +70,20 @@ public class FireStoreDB {
             DocumentSnapshot result = null;
             while (!mFlagGetRoom) {
                 result = queryDocumentSnapshots.getDocuments().get(rand(queryDocumentSnapshots));
-                if (!result.getBoolean(isBusy)) {
-                    mFlagGetRoom = true;
-                    setRoom.attach(mGetPlayers);
-                    setRoom.attach(mGetRole);
+                if (result.contains(isBusy)) {
+                    if (!result.getBoolean(isBusy)) {
+                        mFlagGetRoom = true;
+                        setRoom.attach(mGetPlayers);
+                        setRoom.attach(mGetRole);
 //                        setRoom.attach(mResetRoles);
-                    setRoom.attach(mGetFreePlace);
-                    setRoom.setValue(result);
-                    System.out.println(result.getId());
-                    setRoom.dettach(mGetPlayers);
-                    setRoom.dettach(mGetRole);
-                    setRoom.dettach(mResetRoles);
-                    setRoom.dettach(mGetFreePlace);
+                        setRoom.attach(mGetFreePlace);
+                        setRoom.setValue(result);
+                        System.out.println(result.getId());
+                        setRoom.dettach(mGetPlayers);
+                        setRoom.dettach(mGetRole);
+                        setRoom.dettach(mResetRoles);
+                        setRoom.dettach(mGetFreePlace);
+                    }
                 }
             }
         });

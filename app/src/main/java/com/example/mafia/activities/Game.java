@@ -1,33 +1,25 @@
 package com.example.mafia.activities;
 
-import android.animation.Animator;
-import android.animation.AnimatorInflater;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Chronometer;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mafia.R;
 import com.example.mafia.animations.AnimationUtils;
 import com.example.mafia.databinding.GameBinding;
-import com.example.mafia.fragments.Dialog_Loader;
 import com.example.mafia.interfaces.OnFinished;
+import com.example.mafia.models.ChatAdapter;
 import com.example.mafia.models.GameModel;
 import com.example.mafia.models.RoleModel;
 import com.example.mafia.models.RolesRecycler;
@@ -44,9 +36,11 @@ public class Game extends AppCompatActivity implements OnFinished {
 
     private GameModel mModel;
     private MaterialCardView mMyRole;
+    private RecyclerView mShowMessages;
+    private EditText mSendMessage;
     private GameBinding mBinding;
     private RolesRecycler mAdapter;
-    private RecyclerView mRecyclerView;
+    private RecyclerView mRecyclerRols;
     private LiveData<RoleModel> mGetRole;
     private Chronometer mTime;
     private TimerGame mTimeGame;
@@ -64,6 +58,12 @@ public class Game extends AppCompatActivity implements OnFinished {
         mModel.getFreePlace();
 
 //        mModel.resetRoles();
+        mModel.getMessages().observe(this,chatModels -> {
+            ChatAdapter mChat = new ChatAdapter(chatModels,this);
+            mShowMessages.setAdapter(mChat);
+
+        });
+
 
 
         mGetRole = mModel.getRole();
@@ -81,7 +81,7 @@ public class Game extends AppCompatActivity implements OnFinished {
                 findViewById(R.id.ShowDialog).setVisibility(View.GONE);
             }
         });
-        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerRols.setAdapter(mAdapter);
 
     }
 
@@ -94,11 +94,13 @@ public class Game extends AppCompatActivity implements OnFinished {
         dialog_loader();
         mTime = findViewById(R.id.time_the_game);
         mMyRole = findViewById(R.id.card_role);
-        mRecyclerView = findViewById(R.id.roleRecycler);
+        mRecyclerRols = findViewById(R.id.roleRecycler);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
-        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerRols.setLayoutManager(layoutManager);
         mAdapter = new RolesRecycler(this,mModel.getPlayers());
-
+        mShowMessages = findViewById(R.id.show_messages);
+        mShowMessages.setLayoutManager(new LinearLayoutManager(this));
+        mSendMessage = findViewById(R.id.send_message);
         mAnimation = new AnimationUtils(this);
         timeGameCintroller(START);
     }
