@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/item_actor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_standart_top"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:text="@string/actor"
+        android:textSize="16sp"
+        android:textColor="@color/colorSubText"/>
+
+    <TextView
+        android:id="@+id/item_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_standart_top"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:text="@string/games_count"
+        android:textSize="16sp"
+        android:textColor="@color/colorSubText"/>
+
+    <TextView
+        android:id="@+id/item_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_standart_top"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:text="@string/time"
+        android:textSize="16sp"
+        android:textColor="@color/colorSubText"/>
+
+</LinearLayout>

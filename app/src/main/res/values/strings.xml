@@ -35,4 +35,12 @@
         <item>Ну что, ты готов  совершить правосудие? \n</item>
         <item>Тогда выживи, если сможешь! \n</item>
     </string-array>
+
+
+    <!--> Result values<-->
+    <string name="statistic">Статистика</string>
+    <string name="actor">Персонаж</string>
+    <string name="games_count">Кол-во раз</string>
+    <string name="time">Время</string>
+
 </resources>

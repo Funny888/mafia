@@ -7,4 +7,5 @@
     <color name="colorAccent">#ee2a2a</color>
     <color name="colorEditText">#d9dfd9</color>
     <color name="colorTextView">#ffffff</color>
+    <color name="colorSubText">#BFC72E2E</color>
 </resources>

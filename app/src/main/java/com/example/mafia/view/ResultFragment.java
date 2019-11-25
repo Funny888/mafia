@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +20,7 @@ import com.example.mafia.R;
 import com.example.mafia.databases.RepositoryDB;
 import com.example.mafia.databinding.FragmentResultBinding;
 import com.example.mafia.interfaces.StatisticDao;
+import com.example.mafia.models.ResultAdapter;
 import com.example.mafia.models.StatisticModel;
 import com.example.mafia.viewmodels.ResultViewModel;
 
@@ -37,17 +39,11 @@ public class ResultFragment extends Fragment {
         FragmentResultBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_result, container, false);
 
         RepositoryDB.getInstanse(this.getContext()).getList().observe(this,statisticModels -> {
-          //  String [] result = new String[statisticModels.size() * 3];
-
-
-
-        String[] result = {statisticModels.get(0).getRole(),String.valueOf(statisticModels.get(0).getGames()),String.valueOf(statisticModels.get(0).getTime())};
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(inflater.getContext(), android.R.layout.simple_list_item_1, result);
-
-
-        binding.gridResult.setAdapter(arrayAdapter);
+        ResultAdapter adapter = new ResultAdapter(this.getContext(),statisticModels);
+        binding.listViewResult.setAdapter(adapter);
         });
 
+        binding.statisticTitle.setOnClickListener((c)-> resultViewModel.resetData());
         return binding.getRoot();
     }
 

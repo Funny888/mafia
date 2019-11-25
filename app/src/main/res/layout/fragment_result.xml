@@ -10,12 +10,13 @@
         <include layout="@layout/toolbar" />
 
         <TextView
+            android:id="@+id/statistic_title"
             style="@style/Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/result_title_margin_top"
-            android:text="Статистика" />
+            android:text="@string/statistic" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -29,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_standart_top"
                 android:layout_weight="1"
-                android:text="Персонаж" />
+                android:text="@string/actor" />
 
             <TextView
                 android:id="@+id/couts"
@@ -38,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_standart_top"
                 android:layout_weight="1"
-                android:text="Кол-во раз" />
+                android:text="@string/games_count" />
 
             <TextView
                 android:id="@+id/count_time"
@@ -47,11 +48,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_standart_top"
                 android:layout_weight="1"
-                android:text="Время" />
+                android:text="@string/time" />
         </LinearLayout>
 
-        <GridView
-            android:id="@+id/grid_result"
+        <ListView
+            android:id="@+id/list_view_result"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/gridview_margin_horizontal"
@@ -62,7 +63,7 @@
             android:stretchMode="spacingWidth"
             android:verticalSpacing="5dp">
 
-        </GridView>
+        </ListView>
 
     </LinearLayout>
 

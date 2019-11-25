@@ -1,17 +1,17 @@
 <resources>
-	<dimen name="border">4.6dp</dimen>
-	<dimen name="splash_progress_margin_horizontal">147.2dp</dimen>
-	<dimen name="splash_progress_margin_top">138dp</dimen>
-	<dimen name="learn_motivate_height">414dp</dimen>
-	<dimen name="margin_standart_top">46dp</dimen>
-	<dimen name="result_title_margin_top">184dp</dimen>
-	<dimen name="role_width">138dp</dimen>
-	<dimen name="splash_image_margin_top">92dp</dimen>
-	<dimen name="gridview_margin_horizontal">23dp</dimen>
-	<dimen name="learn_motivate_width">276dp</dimen>
-	<dimen name="gridview_column_width">87.4dp</dimen>
-	<dimen name="learn_btn_ok_padding">36.8dp</dimen>
-	<dimen name="splash_image_size">322dp</dimen>
-	<dimen name="learn_motivate_margin_horizontal">92dp</dimen>
-	<dimen name="role_height">230dp</dimen>
+	<dimen name="border">6dp</dimen>
+	<dimen name="splash_progress_margin_horizontal">192dp</dimen>
+	<dimen name="splash_progress_margin_top">180dp</dimen>
+	<dimen name="learn_motivate_height">540dp</dimen>
+	<dimen name="margin_standart_top">60dp</dimen>
+	<dimen name="result_title_margin_top">120dp</dimen>
+	<dimen name="role_width">180dp</dimen>
+	<dimen name="splash_image_margin_top">120dp</dimen>
+	<dimen name="gridview_margin_horizontal">30dp</dimen>
+	<dimen name="learn_motivate_width">360dp</dimen>
+	<dimen name="gridview_column_width">114dp</dimen>
+	<dimen name="learn_btn_ok_padding">48dp</dimen>
+	<dimen name="splash_image_size">420dp</dimen>
+	<dimen name="learn_motivate_margin_horizontal">120dp</dimen>
+	<dimen name="role_height">300dp</dimen>
 </resources>

@@ -19,7 +19,7 @@ public interface StatisticDao {
     @Insert
     void insertStatistic(StatisticModel statistic);
 
-    @Delete
-    void deleteSttistic(StatisticModel statistic);
+    @Query("DELETE FROM Statistic")
+    void deleteStatistic();
 
 }

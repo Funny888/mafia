@@ -1,12 +1,10 @@
 package com.example.mafia.databases;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Room;
 
-import com.example.mafia.interfaces.StatisticDao;
 import com.example.mafia.models.StatisticModel;
 
 import java.util.List;
@@ -36,7 +34,7 @@ public class RepositoryDB {
         new Thread(()-> mDB.statisticModelDao().insertStatistic(data)).start();
     }
 
-    public void deleteStatistic(StatisticModel data){
-        new Thread(()-> mDB.statisticModelDao().deleteSttistic(data)).start();
+    public void deleteStatistic(){
+        new Thread(()-> mDB.statisticModelDao().deleteStatistic()).start();
     }
 }
