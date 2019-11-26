@@ -23,6 +23,7 @@ import com.example.mafia.models.ChatAdapter;
 import com.example.mafia.models.GameModel;
 import com.example.mafia.models.RoleModel;
 import com.example.mafia.models.RolesRecycler;
+import com.example.mafia.utils.FabricDialogs;
 import com.example.mafia.utils.SettingsUtils;
 import com.example.mafia.utils.TimerGame;
 import com.google.android.material.card.MaterialCardView;
@@ -73,7 +74,7 @@ public class Game extends AppCompatActivity implements OnFinished {
             mAnimation.animationRole(mModel,mMyRole);
             //TODO run mFrame after end animation
             mFrame = getSupportFragmentManager().beginTransaction();
-            mFrame.replace(R.id.ShowDialog, mModel.getDialog(2)).commit();
+            mFrame.replace(R.id.ShowDialog, mModel.getDialog(FabricDialogs.CODE_DIALOG_SHOW_RULES)).commit();
             Toast.makeText(getBaseContext(),mModel.getActor(),Toast.LENGTH_LONG).show();
         });
         mModel.getFreePlace().observe(this,integer -> {
@@ -107,7 +108,7 @@ public class Game extends AppCompatActivity implements OnFinished {
 
     public void dialog_loader(){
         mFrame = getSupportFragmentManager().beginTransaction();
-        mFrame.replace(R.id.ShowDialog,mModel.getDialog(1)).commit();
+        mFrame.replace(R.id.ShowDialog,mModel.getDialog(FabricDialogs.CODE_DIALOG_LOADER)).commit();
     }
 
     public void timeGameCintroller(Integer code){

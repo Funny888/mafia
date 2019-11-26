@@ -1,12 +1,9 @@
 package com.example.mafia.utils;
 
 import android.content.Context;
-import android.os.SystemClock;
-import android.util.Log;
 
 import com.example.mafia.databases.RepositoryDB;
 
-import java.util.Timer;
 import java.util.TimerTask;
 
 public class ClickUtils {

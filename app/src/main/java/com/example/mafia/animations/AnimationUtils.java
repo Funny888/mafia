@@ -8,7 +8,6 @@ import android.content.Context;
 import android.view.View;
 
 import com.example.mafia.R;
-import com.example.mafia.activities.Game;
 import com.example.mafia.models.GameModel;
 import com.google.android.material.card.MaterialCardView;
 
