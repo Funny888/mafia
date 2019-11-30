@@ -17,10 +17,17 @@ public class Dialog_Showrules extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_learn,null,false);
+        View view = inflater.inflate(R.layout.fragment_learn,container,false);
         ViewPager2 pager = view.findViewById(R.id.viewpager);
-        pager.setAdapter(new ShowRulesAdapter(view.getContext()));
-
+        ShowRulesAdapter adapter = new ShowRulesAdapter();
+        pager.setAdapter(adapter);
+        pager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                adapter.getButtonFine().setOnClickListener((c)-> pager.setCurrentItem(position + 1));
+            }
+        });
         return view;
     }
 }

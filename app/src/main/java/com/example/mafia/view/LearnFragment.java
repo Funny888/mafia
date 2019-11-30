@@ -7,19 +7,15 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.mafia.R;
 import com.example.mafia.adpters.PreviewPagerAdapter;
 import com.example.mafia.databinding.FragmentLearnBinding;
-import com.example.mafia.interfaces.ISend;
 import com.example.mafia.viewmodels.LearnViewModel;
-import com.google.android.material.button.MaterialButton;
 
 public class LearnFragment extends Fragment {
 
