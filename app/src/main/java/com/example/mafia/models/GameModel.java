@@ -1,13 +1,16 @@
 package com.example.mafia.models;
 
+import android.app.Application;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 
-import androidx.databinding.BaseObservable;
+import androidx.annotation.NonNull;
 import androidx.databinding.Bindable;
-
+import androidx.databinding.Observable;
+import androidx.databinding.PropertyChangeRegistry;
 import androidx.databinding.library.baseAdapters.BR;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -19,7 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class GameModel extends BaseObservable {
+public class GameModel extends AndroidViewModel implements Observable {
+    private transient PropertyChangeRegistry mCallbacks;
+
     private Context mContext;
     private String mActor;
     private Boolean mIsShowRole;
@@ -32,10 +37,49 @@ public class GameModel extends BaseObservable {
     private NetworkUtils networkUtils = new NetworkUtils();
 
 
-    public GameModel(Context context){mContext = context;
+    public GameModel(@NonNull Application application){
+        super(application);
+        mContext = getApplication();
         bd = FireStoreDB.getInstance(mContext);
     }
 
+
+    public void addOnPropertyChangedCallback(@NonNull OnPropertyChangedCallback callback) {
+        synchronized (this) {
+            if (mCallbacks == null) {
+                mCallbacks = new PropertyChangeRegistry();
+            }
+        }
+        mCallbacks.add(callback);
+    }
+
+    public void removeOnPropertyChangedCallback(@NonNull OnPropertyChangedCallback callback) {
+        synchronized (this) {
+            if (mCallbacks == null) {
+                return;
+            }
+        }
+        mCallbacks.remove(callback);
+    }
+
+
+    public void notifyChange() {
+        synchronized (this) {
+            if (mCallbacks == null) {
+                return;
+            }
+        }
+        mCallbacks.notifyCallbacks(this, 0, null);
+    }
+
+    public void notifyPropertyChanged(int fieldId) {
+        synchronized (this) {
+            if (mCallbacks == null) {
+                return;
+            }
+        }
+        mCallbacks.notifyCallbacks(this, fieldId, null);
+    }
 
     public void setActor(String actor){
         mActor = actor;

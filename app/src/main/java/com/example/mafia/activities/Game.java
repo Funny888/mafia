@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -89,7 +90,8 @@ public class Game extends AppCompatActivity implements OnFinished {
 
     private void setUp(){
         mBinding = DataBindingUtil.setContentView(this, R.layout.game);
-        mModel = new GameModel(this);
+        mBinding.setLifecycleOwner(this);
+        mModel = ViewModelProviders.of(this).get(GameModel.class);
 
 
         dialog_loader();
