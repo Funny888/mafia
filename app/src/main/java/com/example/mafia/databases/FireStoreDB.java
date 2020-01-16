@@ -3,7 +3,7 @@ package com.example.mafia.databases;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
-import androidx.lifecycle.LiveData;
+
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.mafia.R;
@@ -34,7 +34,6 @@ public class FireStoreDB {
     private MyObservable setRoom = new MyObservable();
     private MyObserver mGetRole;
     private MyObserver mGetPlayers;
-    private MyObserver mResetRoles;
     private MyObserver mGetFreePlace;
     private Context mContext;
     private Boolean mFlagGetRoom;
@@ -65,7 +64,6 @@ public class FireStoreDB {
     }
 
     public void getRoom() {
-        Log.d(TAG, "getRoom: ");
         reference.get().addOnSuccessListener((queryDocumentSnapshots) -> {
             DocumentSnapshot result = null;
             while (!mFlagGetRoom) {
@@ -75,40 +73,29 @@ public class FireStoreDB {
                         mFlagGetRoom = true;
                         setRoom.attach(mGetPlayers);
                         setRoom.attach(mGetRole);
-//                        setRoom.attach(mResetRoles);
                         setRoom.attach(mGetFreePlace);
                         setRoom.setValue(result);
                         System.out.println(result.getId());
                         setRoom.dettach(mGetPlayers);
                         setRoom.dettach(mGetRole);
-                        setRoom.dettach(mResetRoles);
                         setRoom.dettach(mGetFreePlace);
                     }
                 }
             }
         });
-
     }
 
+    // TODO This functional is for to comfortable develop the project and must be remove in releases
     public void resetRoleBusy() {
-        Log.d(TAG, "resetRoleBusy: ");
-        mResetRoles = new MyObserver() {
-            @Override
-            public void result(Object obj) {
-                super.result(obj);
-                DocumentSnapshot result = (DocumentSnapshot) obj;
-                result.getReference().collection(Roles).get().addOnSuccessListener((queryDocumentSnapshots) -> {
-                            for (DocumentSnapshot resultReset : queryDocumentSnapshots.getDocuments()) {
-                                resultReset.getReference().update(isBusy, false);
-                            }
-                        }
-                );
+        DocumentSnapshot result = (DocumentSnapshot) setRoom.getValue();
+        result.getReference().collection(Roles).get().addOnSuccessListener((queryDocumentSnapshots) -> {
+            for (DocumentSnapshot resultReset : queryDocumentSnapshots.getDocuments()) {
+                resultReset.getReference().update(isBusy, false);
             }
-        };
+        });
     }
 
-    public MutableLiveData <RoleModel> getRole() {
-        Log.d(TAG, "getRole: ");
+    public MutableLiveData<RoleModel> getRole() {
         mGetRole = new MyObserver() {
             @Override
             public void result(Object obj) {
@@ -136,8 +123,7 @@ public class FireStoreDB {
         return mRoleMutable;
     }
 
-    public MutableLiveData <Integer> getFreePlace() {
-        Log.d(TAG, "getFreePlace: ");
+    public MutableLiveData<Integer> getFreePlace() {
         mGetFreePlace = new MyObserver() {
             @Override
             public void result(Object obj) {
@@ -158,7 +144,6 @@ public class FireStoreDB {
 
 
     public ArrayList<RoleModel> getPlayers() {
-        Log.d(TAG, "getPlayers: ");
         mGetPlayers = new MyObserver() {
             @Override
             public void result(Object obj) {

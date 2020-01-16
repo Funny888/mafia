@@ -6,4 +6,8 @@ public interface IMyObservable {
     void dettach(Object obj);
 
     void setValue(Object value);
+
+    default Object getValue() {
+        return null;
+    }
 }

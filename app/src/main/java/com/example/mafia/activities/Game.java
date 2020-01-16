@@ -1,6 +1,7 @@
 package com.example.mafia.activities;
 
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -59,7 +60,7 @@ public class Game extends AppCompatActivity implements OnFinished {
         mModel.getRoom();
         mModel.getFreePlace();
 
-//        mModel.resetRoles();
+        mTime.setOnClickListener((c) -> mModel.resetRoles());
         mModel.getMessages().observe(this,chatModels -> {
             ChatAdapter mChat = new ChatAdapter(chatModels,this);
             mShowMessages.setAdapter(mChat);

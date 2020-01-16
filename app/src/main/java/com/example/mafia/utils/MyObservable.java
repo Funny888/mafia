@@ -7,8 +7,8 @@ import com.example.mafia.interfaces.OnFinished;
 import java.util.ArrayList;
 
 public class MyObservable implements IMyObservable {
-    ArrayList<IMyObserver> mList = new ArrayList<>();
-
+    private ArrayList<IMyObserver> mList = new ArrayList<>();
+    private Object mValue;
     @Override
     public void attach(Object obj) {
         mList.add((IMyObserver)obj);
@@ -21,8 +21,14 @@ public class MyObservable implements IMyObservable {
 
     @Override
     public void setValue(Object value) {
+        mValue = value;
         for (IMyObserver subj: mList) {
-            subj.result(value);
+            subj.result(mValue);
         }
+    }
+
+    @Override
+    public Object getValue() {
+        return mValue;
     }
 }
