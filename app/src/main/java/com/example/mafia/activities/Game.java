@@ -1,7 +1,10 @@
 package com.example.mafia.activities;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
-import android.view.MotionEvent;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -9,8 +12,10 @@ import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.MainThread;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
@@ -18,7 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mafia.R;
-import com.example.mafia.animations.AnimationUtils;
+import com.example.mafia.animations.AnimationUtilsHelper;
 import com.example.mafia.databinding.GameBinding;
 import com.example.mafia.interfaces.OnFinished;
 import com.example.mafia.models.ChatAdapter;
@@ -48,7 +53,10 @@ public class Game extends AppCompatActivity implements OnFinished {
     private Chronometer mTime;
     private TimerGame mTimeGame;
     private FragmentTransaction mFrame;
-    private AnimationUtils mAnimation;
+    private AnimationUtilsHelper mAnimation;
+    private Fragment mFragment;
+    private Handler mHandler = new Handler(Looper.myLooper());
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,25 +69,38 @@ public class Game extends AppCompatActivity implements OnFinished {
         mModel.getFreePlace();
 
         mTime.setOnClickListener((c) -> mModel.resetRoles());
-        mModel.getMessages().observe(this,chatModels -> {
-            ChatAdapter mChat = new ChatAdapter(chatModels,this);
+        mModel.getMessages().observe(this, chatModels -> {
+            ChatAdapter mChat = new ChatAdapter(chatModels, this);
             mShowMessages.setAdapter(mChat);
 
         });
 
 
-
         mGetRole = mModel.getRole();
         mGetRole.observe(this, (role) -> {
+            mFrame = getSupportFragmentManager().beginTransaction().hide(mFragment);
+            mFrame.commit();
             mModel.setActor(role.getRoleName());
             mModel.setIdImage(role.getRoleDrawable());
-            mAnimation.animationRole(mModel,mMyRole);
-            //TODO run mFrame after end animation
-            mFrame = getSupportFragmentManager().beginTransaction();
-            mFrame.replace(R.id.ShowDialog, mModel.getDialog(FabricDialogs.CODE_DIALOG_SHOW_RULES)).commit();
-            Toast.makeText(getBaseContext(),mModel.getActor(),Toast.LENGTH_LONG).show();
+            mAnimation.animationRole(mModel, mMyRole).start();
+            mAnimation.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    new Thread(() -> {
+                        while (true) {
+                            if (!animation.isRunning()) break;
+                        }
+                        mHandler.postDelayed(() -> leavePalyers(), getResources().getInteger(R.integer.flip_duration_half));
+                    }).start();
+
+                }
+            });
+
+
         });
-        mModel.getFreePlace().observe(this,integer -> {
+
+        mModel.getFreePlace().observe(this, integer -> {
             if (integer == 0) {
                 findViewById(R.id.ShowDialog).setVisibility(View.GONE);
             }
@@ -89,7 +110,7 @@ public class Game extends AppCompatActivity implements OnFinished {
     }
 
 
-    private void setUp(){
+    private void setUp() {
         mBinding = DataBindingUtil.setContentView(this, R.layout.game);
         mBinding.setLifecycleOwner(this);
         mModel = ViewModelProviders.of(this).get(GameModel.class);
@@ -101,32 +122,41 @@ public class Game extends AppCompatActivity implements OnFinished {
         mRecyclerRols = findViewById(R.id.roleRecycler);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
         mRecyclerRols.setLayoutManager(layoutManager);
-        mAdapter = new RolesRecycler(this,mModel.getPlayers());
+        mAdapter = new RolesRecycler(this, mModel.getPlayers());
         mShowMessages = findViewById(R.id.show_messages);
         mShowMessages.setLayoutManager(new LinearLayoutManager(this));
         mSendMessage = findViewById(R.id.send_message);
-        mAnimation = new AnimationUtils(this);
+        mAnimation = new AnimationUtilsHelper(this);
         timeGameCintroller(START);
     }
 
-    public void dialog_loader(){
+    public void dialog_loader() {
+        mFragment = mModel.getDialog(FabricDialogs.CODE_DIALOG_LOADER);
         mFrame = getSupportFragmentManager().beginTransaction();
-        mFrame.replace(R.id.ShowDialog,mModel.getDialog(FabricDialogs.CODE_DIALOG_LOADER)).commit();
+        mFrame.replace(R.id.ShowDialog, mFragment).commit();
     }
 
-    public void timeGameCintroller(Integer code){
-        mTimeGame =  new TimerGame(mTime,this);
+    @MainThread
+    private void leavePalyers() {
+        mMyRole.setVisibility(View.GONE);
+        mFrame = getSupportFragmentManager().beginTransaction();
+        mFrame.replace(R.id.ShowDialog, mModel.getDialog(FabricDialogs.CODE_DIALOG_SHOW_RULES)).commit();
+        Toast.makeText(getBaseContext(), mModel.getActor(), Toast.LENGTH_LONG).show();
+    }
+
+    public void timeGameCintroller(Integer code) {
+        mTimeGame = new TimerGame(mTime, this);
         mTimeGame.finalCountDown(this);
-        switch (code){
-            case START:{
+        switch (code) {
+            case START: {
                 mTimeGame.start();
                 break;
             }
-            case STOP:{
+            case STOP: {
                 mTimeGame.stop();
                 break;
             }
-            case RESET:{
+            case RESET: {
                 mTimeGame.reset();
                 break;
             }

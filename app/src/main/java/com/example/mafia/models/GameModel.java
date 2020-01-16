@@ -23,6 +23,9 @@ import java.util.List;
 
 
 public class GameModel extends AndroidViewModel implements Observable {
+
+    public static final String TAG = GameModel.class.getSimpleName();
+
     private transient PropertyChangeRegistry mCallbacks;
 
     private Context mContext;
@@ -60,16 +63,6 @@ public class GameModel extends AndroidViewModel implements Observable {
             }
         }
         mCallbacks.remove(callback);
-    }
-
-
-    public void notifyChange() {
-        synchronized (this) {
-            if (mCallbacks == null) {
-                return;
-            }
-        }
-        mCallbacks.notifyCallbacks(this, 0, null);
     }
 
     public void notifyPropertyChanged(int fieldId) {
