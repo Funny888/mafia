@@ -8,4 +8,8 @@
     <color name="colorEditText">#d9dfd9</color>
     <color name="colorTextView">#ffffff</color>
     <color name="colorSubText">#BFC72E2E</color>
+
+<!--    background for fragments-->
+    <color name="colorToFragments">#4D000000</color>
+<!--    <color name="colorToFragments">#126F3131</color>-->
 </resources>

@@ -83,21 +83,7 @@ public class Game extends AppCompatActivity implements OnFinished {
             mModel.setActor(role.getRoleName());
             mModel.setIdImage(role.getRoleDrawable());
             mAnimation.animationRole(mModel, mMyRole).start();
-            mAnimation.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    super.onAnimationEnd(animation);
-                    new Thread(() -> {
-                        while (true) {
-                            if (!animation.isRunning()) break;
-                        }
-                        mHandler.postDelayed(() -> leavePalyers(), getResources().getInteger(R.integer.flip_duration_half));
-                    }).start();
-
-                }
-            });
-
-
+            mAnimation.addListener(changeAnimation);
         });
 
         mModel.getFreePlace().observe(this, integer -> {
@@ -174,4 +160,18 @@ public class Game extends AppCompatActivity implements OnFinished {
     public void isFinish(Boolean bool) {
         mModel.setIsShowPlayers(bool);
     }
+
+    AnimatorListenerAdapter changeAnimation = new AnimatorListenerAdapter() {
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            super.onAnimationEnd(animation);
+            new Thread(() -> {
+                while (true) {
+                    if (!animation.isRunning()) break;
+                }
+                mHandler.postDelayed(() -> leavePalyers(), getResources().getInteger(R.integer.flip_duration_half));
+            }).start();
+
+        }
+    };
 }

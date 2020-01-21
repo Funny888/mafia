@@ -14,6 +14,13 @@
         <item name="android:textColor">@color/colorAccent</item>
     </style>
 
+    <style name="FragStyle" parent="TextStyle">
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:layout_marginStart">@dimen/border</item>
+        <item name="android:layout_marginEnd">@dimen/border</item>
+        <item name="android:backgroundTint">#BA484E74</item>
+    </style>
+
     <style name="ButtonStyle" parent="Widget.MaterialComponents.Button">
         <item name="android:textSize">22sp</item>
         <item name="android:textColor">@color/colorAccent</item>

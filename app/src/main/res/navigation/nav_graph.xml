@@ -24,12 +24,6 @@
         tools:layout="@layout/fragment_about" />
 
     <fragment
-        android:id="@+id/navigation_game"
-        android:name="com.example.mafia.view.GameFragment"
-        android:label="@string/title_game"
-        tools:layout="@layout/fragment_game" />
-
-    <fragment
         android:id="@+id/navigation_how"
         android:name="com.example.mafia.view.HowFragment"
         android:label="@string/title_how"

@@ -1,6 +1,7 @@
 package com.example.mafia.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,20 +15,38 @@ import com.example.mafia.R;
 import com.example.mafia.adpters.ShowRulesAdapter;
 
 public class Dialog_Showrules extends Fragment {
+    private static final String TAG = Dialog_Showrules.class.getSimpleName();
+    private ViewPager2 mPager;
+    private ShowRulesAdapter mAdapter;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_learn,container,false);
-        ViewPager2 pager = view.findViewById(R.id.viewpager);
-        ShowRulesAdapter adapter = new ShowRulesAdapter();
-        pager.setAdapter(adapter);
-        pager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-                adapter.getButtonFine().setOnClickListener((c)-> pager.setCurrentItem(position + 1));
-            }
-        });
+        mPager = view.findViewById(R.id.viewpager);
+        mAdapter = new ShowRulesAdapter(view.getContext());
+        mAdapter.setListener((button) -> actionClick(button));
+        mPager.setAdapter(mAdapter);
+        mPager.setUserInputEnabled(false);
         return view;
+    }
+
+    private void actionClick(View button) {
+        switch (button.getId()){
+            case R.id.btn_fine: {
+                button.setOnClickListener((c) -> {
+                    if (mAdapter.getItemCount() != mPager.getCurrentItem() + 1) {
+                        mPager.setCurrentItem(mPager.getCurrentItem() + 1);
+                    } else {
+                        mPager.setVisibility(View.GONE);
+                    }
+                });
+                break;
+            }
+            case R.id.btn_skip: {
+                button.setOnClickListener((c) -> mPager.setVisibility(View.GONE));
+                break;
+            }
+        }
     }
 }

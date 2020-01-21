@@ -1,5 +1,6 @@
 package com.example.mafia.adpters;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +13,17 @@ import com.example.mafia.R;
 import com.google.android.material.button.MaterialButton;
 
 public class ShowRulesAdapter extends RecyclerView.Adapter<ShowRulesAdapter.Holder> {
+    public interface OnButton{
+        void onClick(View v);
+    }
+    private Context mContext;
+    private String[] mRules;
+    private OnButton mOnButton;
 
-    private MaterialButton mButtonFine;
-    private MaterialButton mButtonSkip;
-    public ShowRulesAdapter(){}
-
-    String[] s = {"There will be rules the game","page2"};
+    public ShowRulesAdapter(Context context) {
+        mContext = context;
+        mRules = mContext.getResources().getStringArray(R.array.rules_game);
+    }
 
     @NonNull
     @Override
@@ -27,21 +33,21 @@ public class ShowRulesAdapter extends RecyclerView.Adapter<ShowRulesAdapter.Hold
 
     @Override
     public void onBindViewHolder(@NonNull Holder holder, int position) {
-        holder.mRuletext.setText(s[position]);
+        holder.mRuletext.setText(mRules[position]);
+        if (position == mRules.length - 1) {
+            holder.mSkip.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return s.length;
+        return mRules.length;
     }
 
-    public MaterialButton getButtonFine() {
-        return mButtonFine;
+    public void setListener(OnButton button) {
+        mOnButton = button;
     }
 
-    public MaterialButton getButtonSkip(){
-        return mButtonSkip;
-    }
 
     public class Holder extends RecyclerView.ViewHolder {
         private TextView mRuletext;
@@ -52,8 +58,8 @@ public class ShowRulesAdapter extends RecyclerView.Adapter<ShowRulesAdapter.Hold
             mRuletext = itemView.findViewById(R.id.tv_rule);
             mSkip = itemView.findViewById(R.id.btn_skip);
             mFine = itemView.findViewById(R.id.btn_fine);
-            mButtonFine = mFine;
-            mButtonSkip = mSkip;
+            mOnButton.onClick(mFine);
+            mOnButton.onClick(mSkip);
         }
     }
 }
