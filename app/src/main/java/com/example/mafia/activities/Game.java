@@ -33,6 +33,7 @@ import com.example.mafia.models.RolesRecycler;
 import com.example.mafia.utils.FabricDialogs;
 import com.example.mafia.utils.SettingsUtils;
 import com.example.mafia.utils.TimerGame;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 
 public class Game extends AppCompatActivity implements OnFinished {
@@ -45,7 +46,8 @@ public class Game extends AppCompatActivity implements OnFinished {
     private GameModel mModel;
     private MaterialCardView mMyRole;
     private RecyclerView mShowMessages;
-    private EditText mSendMessage;
+    private EditText mEditLineMessage;
+    private MaterialButton mSendMessage;
     private GameBinding mBinding;
     private RolesRecycler mAdapter;
     private RecyclerView mRecyclerRols;
@@ -93,6 +95,9 @@ public class Game extends AppCompatActivity implements OnFinished {
         });
         mRecyclerRols.setAdapter(mAdapter);
 
+        mSendMessage.setOnClickListener((c) -> {
+            mModel.sendMessages(mEditLineMessage.getText().toString());
+        });
     }
 
 
@@ -111,6 +116,7 @@ public class Game extends AppCompatActivity implements OnFinished {
         mAdapter = new RolesRecycler(this, mModel.getPlayers());
         mShowMessages = findViewById(R.id.show_messages);
         mShowMessages.setLayoutManager(new LinearLayoutManager(this));
+        mEditLineMessage = findViewById(R.id.edit_line_message);
         mSendMessage = findViewById(R.id.send_message);
         mAnimation = new AnimationUtilsHelper(this);
         timeGameCintroller(START);
