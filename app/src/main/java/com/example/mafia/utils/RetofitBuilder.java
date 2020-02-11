@@ -2,6 +2,7 @@ package com.example.mafia.utils;
 
 import com.example.mafia.BuildConfig;
 import com.example.mafia.interfaces.IGetMessages;
+import com.example.mafia.interfaces.ISendMessages;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -30,5 +31,12 @@ public class RetofitBuilder {
         return mRetrofit.create(IGetMessages.class);
     }
 
-
+    public ISendMessages SendMessage() {
+        mRetrofit = new Retrofit.Builder().
+                baseUrl(BASE_URL).
+                client(mOk).
+                addConverterFactory(GsonConverterFactory.create()).
+                build();
+        return mRetrofit.create(ISendMessages.class);
+    }
 }

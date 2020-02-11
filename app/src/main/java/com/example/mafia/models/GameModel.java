@@ -171,4 +171,5 @@ public class GameModel extends AndroidViewModel implements Observable {
     public void sendMessages(String message){
         networkUtils.sendMessage(getRole().getValue().getRoleName(),message);
     }
+
 }

@@ -74,7 +74,7 @@ public class Game extends AppCompatActivity implements OnFinished {
         mModel.getMessages().observe(this, chatModels -> {
             ChatAdapter mChat = new ChatAdapter(chatModels, this);
             mShowMessages.setAdapter(mChat);
-
+            mShowMessages.smoothScrollToPosition(mChat.getItemCount() - 1);
         });
 
 
@@ -97,6 +97,7 @@ public class Game extends AppCompatActivity implements OnFinished {
 
         mSendMessage.setOnClickListener((c) -> {
             mModel.sendMessages(mEditLineMessage.getText().toString());
+            mEditLineMessage.setText("");
         });
     }
 

@@ -35,7 +35,6 @@ public class RolesRecycler extends RecyclerView.Adapter<RolesRecycler.Holder> {
         holder.mRoleName.setText(mList.get(position).getRoleName());
         holder.mRoleImage.setImageDrawable(mList.get(position).getRoleDrawable());
         holder.mRoleLetter.setText(mList.get(position).getRoleLetter());
-
     }
 
     @Override
