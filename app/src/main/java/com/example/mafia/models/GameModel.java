@@ -37,12 +37,13 @@ public class GameModel extends AndroidViewModel implements Observable {
     private Drawable mIdImage;
     private FireStoreDB mDatabase;
     private FabricDialogs fabricDialogs = new FabricDialogs();
-    private NetworkUtils networkUtils = new NetworkUtils();
+    private NetworkUtils networkUtils;
 
 
     public GameModel(@NonNull Application application){
         super(application);
         mContext = getApplication();
+        networkUtils = new NetworkUtils(mContext);
         mDatabase = FireStoreDB.getInstance(mContext);
     }
 
@@ -144,15 +145,16 @@ public class GameModel extends AndroidViewModel implements Observable {
         mDatabase.resetRoleBusy();
     }
 
-    public void getRoom(){
-        mDatabase.getRoom();
-    }
+//    public void getRoom(){
+//        mDatabase.getRoom();
+//    }
 
-    public LiveData<RoleModel> getRole(){
-        return mDatabase.getRole();
+    public LiveData<GamePlace> getRole(){
+        return networkUtils.getRole();
     }
 
     public LiveData<Integer> getFreePlace(){
+
         return mDatabase.getFreePlace();
     }
 
@@ -169,7 +171,7 @@ public class GameModel extends AndroidViewModel implements Observable {
     }
 
     public void sendMessages(String message){
-        networkUtils.sendMessage(getRole().getValue().getRoleName(),message);
+        networkUtils.sendMessage(getRole().getValue().getRole().getRoleName(),message);
     }
 
 }

@@ -4,12 +4,14 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.mafia.R;
 import com.example.mafia.models.RoleModel;
 import com.example.mafia.utils.MyObservable;
 import com.example.mafia.utils.MyObserver;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -55,6 +57,17 @@ public class FireStoreDB {
         return sInstance;
     }
 
+    public void getRole2(MutableLiveData<RoleModel> role){
+        role.observe((LifecycleOwner) this, roleModel -> {
+            setRoom.setValue(roleModel.getId());
+        });
+        setRoom.attach(mGetPlayers);
+        setRoom.attach(mGetFreePlace);
+        setRoom.dettach(mGetPlayers);
+        setRoom.dettach(mGetFreePlace);
+    }
+
+
     private int rand(QuerySnapshot queryDocumentSnapshots) {
         int max = queryDocumentSnapshots.size();
         System.out.println(max);
@@ -87,12 +100,14 @@ public class FireStoreDB {
 
     // TODO This functional is for to comfortable develop the project and must be remove in releases
     public void resetRoleBusy() {
-        DocumentSnapshot result = (DocumentSnapshot) setRoom.getValue();
-        result.getReference().collection(Roles).get().addOnSuccessListener((queryDocumentSnapshots) -> {
-            for (DocumentSnapshot resultReset : queryDocumentSnapshots.getDocuments()) {
-                resultReset.getReference().update(isBusy, false);
-            }
+        reference.document("/Room1").get().addOnSuccessListener(documentSnapshot -> {
+            documentSnapshot.getReference().collection(Roles).get().addOnSuccessListener((queryDocumentSnapshots) -> {
+                for (DocumentSnapshot resultReset : queryDocumentSnapshots.getDocuments()) {
+                    resultReset.getReference().update(isBusy, false);
+                }
+            });
         });
+
     }
 
     public MutableLiveData<RoleModel> getRole() {
@@ -110,7 +125,7 @@ public class FireStoreDB {
                         if (!result.getBoolean(isBusy)) {
                             flag = true;
                             result.getReference().update(isBusy, true);
-                            mRoleMutable.postValue(new RoleModel(result.getLong(Id), result.getString(Role), getImageRole(result.getString(Role)), result.getBoolean(isBusy), result.getBoolean(isDead), "ffd"));
+                            mRoleMutable.postValue(new RoleModel(result.getLong(Id), result.getString(Role),result.getBoolean(isBusy),  result.getBoolean(isDead), getImageRole(result.getString(Role)),  "ffd"));
                         }
                         if (times == 6) {
                             return;
@@ -152,7 +167,7 @@ public class FireStoreDB {
                 result.getReference().collection(Roles).addSnapshotListener((queryDocumentSnapshots, e) -> {
                     mPlayers.clear();
                     for (DocumentSnapshot play : queryDocumentSnapshots.getDocuments()) {
-                        mPlayers.add(new RoleModel(play.getLong(Id), play.getString(Role), getImageRole(play.getString(Role)), play.getBoolean(isBusy), play.getBoolean(isDead), "ffd"));
+                        mPlayers.add(new RoleModel(play.getLong(Id), play.getString(Role),play.getBoolean(isBusy),  play.getBoolean(isDead), getImageRole(play.getString(Role)),  "ffd"));
                     }
                 });
             }

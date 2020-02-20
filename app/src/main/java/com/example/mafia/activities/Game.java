@@ -28,6 +28,7 @@ import com.example.mafia.databinding.GameBinding;
 import com.example.mafia.interfaces.OnFinished;
 import com.example.mafia.models.ChatAdapter;
 import com.example.mafia.models.GameModel;
+import com.example.mafia.models.GamePlace;
 import com.example.mafia.models.RoleModel;
 import com.example.mafia.models.RolesRecycler;
 import com.example.mafia.utils.FabricDialogs;
@@ -51,7 +52,7 @@ public class Game extends AppCompatActivity implements OnFinished {
     private GameBinding mBinding;
     private RolesRecycler mAdapter;
     private RecyclerView mRecyclerRols;
-    private LiveData<RoleModel> mGetRole;
+    private LiveData<GamePlace> mGetRole;
     private Chronometer mTime;
     private TimerGame mTimeGame;
     private FragmentTransaction mFrame;
@@ -67,14 +68,14 @@ public class Game extends AppCompatActivity implements OnFinished {
         setContentView(R.layout.game);
         setUp();
         mBinding.setModel(mModel);
-        mModel.getRoom();
+        //mModel.getRoom();
         mModel.getFreePlace();
 
         mTime.setOnClickListener((c) -> mModel.resetRoles());
         mModel.getMessages().observe(this, chatModels -> {
             ChatAdapter mChat = new ChatAdapter(chatModels, this);
             mShowMessages.setAdapter(mChat);
-            mShowMessages.smoothScrollToPosition(mChat.getItemCount() - 1);
+            mShowMessages.smoothScrollToPosition(mChat.getItemCount());
         });
 
 
@@ -82,8 +83,8 @@ public class Game extends AppCompatActivity implements OnFinished {
         mGetRole.observe(this, (role) -> {
             mFrame = getSupportFragmentManager().beginTransaction().hide(mFragment);
             mFrame.commit();
-            mModel.setActor(role.getRoleName());
-            mModel.setIdImage(role.getRoleDrawable());
+            mModel.setActor(role.getRole().getRoleName());
+            mModel.setIdImage(role.getRole().getRoleDrawable());
             mAnimation.animationRole(mModel, mMyRole).start();
             mAnimation.addListener(changeAnimation);
         });
