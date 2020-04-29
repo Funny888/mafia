@@ -40,7 +40,7 @@ public class GameModel extends AndroidViewModel implements Observable {
     private NetworkUtils networkUtils;
 
 
-    public GameModel(@NonNull Application application){
+    public GameModel(@NonNull Application application) {
         super(application);
         mContext = getApplication();
         networkUtils = new NetworkUtils(mContext);
@@ -75,7 +75,7 @@ public class GameModel extends AndroidViewModel implements Observable {
         mCallbacks.notifyCallbacks(this, fieldId, null);
     }
 
-    public void setActor(String actor){
+    public void setActor(String actor) {
         mActor = actor;
         notifyPropertyChanged(BR.actor);
     }
@@ -85,93 +85,89 @@ public class GameModel extends AndroidViewModel implements Observable {
         return mActor;
     }
 
-    public void setIsShowRole(Boolean show){
+    public void setIsShowRole(Boolean show) {
         mIsShowRole = show;
         notifyPropertyChanged(BR.isShowRole);
     }
 
     @Bindable
-    public Boolean getIsShowRole(){
+    public Boolean getIsShowRole() {
         return mIsShowRole;
     }
 
-    public void setShowCardRole(Boolean show){
+    public void setShowCardRole(Boolean show) {
         mIsShowCardRole = show;
         notifyPropertyChanged(BR.showCardRole);
     }
 
     @Bindable
-    public Boolean getShowCardRole(){
+    public Boolean getShowCardRole() {
         return mIsShowCardRole;
     }
 
-    public void setIdImage(Drawable show){
+    public void setIdImage(Drawable show) {
         mIdImage = show;
         notifyPropertyChanged(BR.idImage);
     }
 
     @Bindable
-    public Drawable getIdImage(){
+    public Drawable getIdImage() {
         return mIdImage;
     }
 
-    public void setIsShowPlayers(Boolean show){
+    public void setIsShowPlayers(Boolean show) {
         mIsShowPlayers = show;
         notifyPropertyChanged(BR.isShowPlayers);
     }
 
     @Bindable
-    public Boolean getIsShowPlayers(){
+    public Boolean getIsShowPlayers() {
         return mIsShowPlayers;
     }
 
-    public void setBackImage(Boolean show){
+    public void setBackImage(Boolean show) {
         mBackImage = show;
         notifyPropertyChanged(BR.backImage);
     }
 
     @Bindable
-    public Boolean getBackImage(){
+    public Boolean getBackImage() {
         return mBackImage;
     }
 
 
-    public GameModel getModel(){
+    public GameModel getModel() {
         return this;
     }
 
 
-    public void resetRoles(){
+    public void resetRoles() {
         mDatabase.resetRoleBusy();
     }
 
-//    public void getRoom(){
-//        mDatabase.getRoom();
-//    }
-
-    public LiveData<GamePlace> getRole(){
+    public LiveData<GamePlace> getRole() {
         return networkUtils.getRole();
     }
 
-    public LiveData<Integer> getFreePlace(){
+    public LiveData<Integer> getFreePlace(String room) {
 
-        return mDatabase.getFreePlace();
+        return mDatabase.getFreePlace(room);
     }
 
-    public ArrayList<RoleModel> getPlayers(){
-        return mDatabase.getPlayers();
+    public MutableLiveData<ArrayList<RoleModel>> getPlayers(String room) {
+        return networkUtils.getAllPlayers(room);
     }
 
-    public Fragment getDialog(int code){
+    public Fragment getDialog(int code) {
         return fabricDialogs.getDialog(code);
     }
 
-    public MutableLiveData<List<ChatModel>> getMessages(){
+    public MutableLiveData<List<ChatModel>> getMessages() {
         return networkUtils.getMessages();
     }
 
-    public void sendMessages(String message){
-        networkUtils.sendMessage(getRole().getValue().getRole().getRoleName(),message);
+    public void sendMessages(String message) {
+        networkUtils.sendMessage(getRole().getValue().getRole().getRoleName(), message);
     }
 
 }

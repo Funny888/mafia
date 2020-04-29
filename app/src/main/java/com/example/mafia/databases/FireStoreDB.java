@@ -39,6 +39,7 @@ public class FireStoreDB {
     private MyObserver mGetFreePlace;
     private Context mContext;
     private Boolean mFlagGetRoom;
+    private String mRoom;
 
     private FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     private CollectionReference reference = firestore.collection(Rooms);
@@ -67,37 +68,6 @@ public class FireStoreDB {
         setRoom.dettach(mGetFreePlace);
     }
 
-
-    private int rand(QuerySnapshot queryDocumentSnapshots) {
-        int max = queryDocumentSnapshots.size();
-        System.out.println(max);
-        Random r = new Random();
-        int l = r.nextInt(max);
-        return l;
-    }
-
-    public void getRoom() {
-        reference.get().addOnSuccessListener((queryDocumentSnapshots) -> {
-            DocumentSnapshot result = null;
-            while (!mFlagGetRoom) {
-                result = queryDocumentSnapshots.getDocuments().get(rand(queryDocumentSnapshots));
-                if (result.contains(isBusy)) {
-                    if (!result.getBoolean(isBusy)) {
-                        mFlagGetRoom = true;
-                        setRoom.attach(mGetPlayers);
-                        setRoom.attach(mGetRole);
-                        setRoom.attach(mGetFreePlace);
-                        setRoom.setValue(result);
-                        System.out.println(result.getId());
-                        setRoom.dettach(mGetPlayers);
-                        setRoom.dettach(mGetRole);
-                        setRoom.dettach(mGetFreePlace);
-                    }
-                }
-            }
-        });
-    }
-
     // TODO This functional is for to comfortable develop the project and must be remove in releases
     public void resetRoleBusy() {
         reference.document("/Room1").get().addOnSuccessListener(documentSnapshot -> {
@@ -109,88 +79,22 @@ public class FireStoreDB {
         });
 
     }
-
-    public MutableLiveData<RoleModel> getRole() {
-        mGetRole = new MyObserver() {
-            @Override
-            public void result(Object obj) {
-                super.result(obj);
-                DocumentSnapshot room = (DocumentSnapshot) obj;
-                room.getReference().collection(Roles).get().addOnSuccessListener((queryDocumentSnapshots) -> {
-                    boolean flag = false;
-                    int times = 0;
-                    DocumentSnapshot result = null;
-                    while (!flag) {
-                        result = queryDocumentSnapshots.getDocuments().get(rand(queryDocumentSnapshots));
-                        if (!result.getBoolean(isBusy)) {
-                            flag = true;
-                            result.getReference().update(isBusy, true);
-                            mRoleMutable.postValue(new RoleModel(result.getLong(Id), result.getString(Role),result.getBoolean(isBusy),  result.getBoolean(isDead), getImageRole(result.getString(Role)),  "ffd"));
-                        }
-                        if (times == 6) {
-                            return;
-                        }
-                        times++;
-                    }
-                });
-            }
-        };
-        return mRoleMutable;
+    public String getRoom(){
+        return mRoom;
     }
 
-    public MutableLiveData<Integer> getFreePlace() {
-        mGetFreePlace = new MyObserver() {
-            @Override
-            public void result(Object obj) {
-                super.result(obj);
-                DocumentSnapshot result = (DocumentSnapshot) obj;
-                result.getReference().collection(Roles).addSnapshotListener((queryDocumentSnapshots, FirebaseFirestoreException) -> {
-                    int free = queryDocumentSnapshots.size();
-                    for (QueryDocumentSnapshot query : queryDocumentSnapshots) {
-                        if (query.getBoolean(isBusy))
-                            free--;
-                    }
-                    mFreePlace.postValue(free);
-                });
-            }
-        };
+    public MutableLiveData<Integer> getFreePlace(String room) {
+        mRoom = room;
+        reference.document(room).get().addOnSuccessListener(documentSnapshot -> {
+            documentSnapshot.getReference().collection(Roles).addSnapshotListener((queryDocumentSnapshots, FirebaseFirestoreException) -> {
+                int free = queryDocumentSnapshots.size();
+                for (QueryDocumentSnapshot query : queryDocumentSnapshots) {
+                    if (query.getBoolean(isBusy))
+                        free--;
+                }
+                mFreePlace.postValue(free);
+            });
+        });
         return mFreePlace;
-    }
-
-
-    public ArrayList<RoleModel> getPlayers() {
-        mGetPlayers = new MyObserver() {
-            @Override
-            public void result(Object obj) {
-                super.result(obj);
-                DocumentSnapshot result = (DocumentSnapshot) obj;
-                result.getReference().collection(Roles).addSnapshotListener((queryDocumentSnapshots, e) -> {
-                    mPlayers.clear();
-                    for (DocumentSnapshot play : queryDocumentSnapshots.getDocuments()) {
-                        mPlayers.add(new RoleModel(play.getLong(Id), play.getString(Role),play.getBoolean(isBusy),  play.getBoolean(isDead), getImageRole(play.getString(Role)),  "ffd"));
-                    }
-                });
-            }
-        };
-
-        return mPlayers;
-    }
-
-    private Drawable getImageRole(String role) {
-        Drawable image = null;
-        switch (role) {
-            case "Mafia": {
-                image = mContext.getDrawable(R.drawable.card_image_mafia);
-                break;
-            }
-
-            case "Civilian": {
-                image = mContext.getDrawable(R.drawable.card_image_people);
-                break;
-            }
-        }
-
-
-        return image;
     }
 }

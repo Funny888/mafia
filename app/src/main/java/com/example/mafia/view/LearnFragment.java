@@ -13,7 +13,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.mafia.R;
-import com.example.mafia.adpters.PreviewPagerAdapter;
+import com.example.mafia.adapters.PreviewPagerAdapter;
 import com.example.mafia.databinding.FragmentLearnBinding;
 import com.example.mafia.viewmodels.LearnViewModel;
 

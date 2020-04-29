@@ -17,40 +17,44 @@
 
     <Chronometer
         android:id="@+id/time_the_game"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:layout_marginEnd="28dp"
-        android:elevation="4dp"
-        android:timePickerMode="clock"
-        android:format="@string/time_count_down"
         android:countDown="true"
+        android:elevation="4dp"
+        android:format="@string/time_count_down"
+        android:timePickerMode="clock"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHorizontal_bias="0.92"
         app:layout_constraintVertical_bias="0.039" />
 
     <TextView
         android:id="@+id/role"
         android:layout_width="100dp"
         android:layout_height="50dp"
-        android:layout_marginTop="28dp"
         android:text="@{model.actor}"
         android:textColor="@color/colorTextView"
         android:textSize="20sp"
         android:visibility="@{model.isShowRole?View.VISIBLE:View.GONE}"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.051"
+        app:layout_constraintHorizontal_bias="0.08"
+        app:layout_constraintVertical_bias="0.03"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
     <ImageView
         android:id="@+id/imageView2"
         android:layout_width="171dp"
         android:layout_height="154dp"
-        android:layout_marginTop="44dp"
         android:src="@drawable/leader"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/imageView"
         app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintVertical_bias="0.11"
         app:layout_constraintStart_toStartOf="@+id/imageView"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -58,10 +62,11 @@
         android:id="@+id/imageView"
         android:layout_width="356dp"
         android:layout_height="398dp"
-        android:layout_marginTop="92dp"
         android:src="@drawable/tablet"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.49"
+        app:layout_constraintVertical_bias="0.26"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

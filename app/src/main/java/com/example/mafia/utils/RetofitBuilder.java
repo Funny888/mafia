@@ -48,4 +48,22 @@ public class RetofitBuilder {
                 build();
         return  mRetrofit.create(IGetEvents.class);
     }
+
+    public IGetEvents getPlayers(){
+        mRetrofit = new Retrofit.Builder().
+                baseUrl(BASE_URL).
+                client(mOk).
+                addConverterFactory(GsonConverterFactory.create()).
+                build();
+        return  mRetrofit.create(IGetEvents.class);
+    }
+
+    public IGetEvents sendVoted(){
+                mRetrofit = new Retrofit.Builder().
+                baseUrl(BASE_URL).
+                client(mOk).
+                addConverterFactory(GsonConverterFactory.create()).
+                build();
+        return mRetrofit.create(IGetEvents.class);
+    }
 }

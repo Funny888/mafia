@@ -1,4 +1,4 @@
-package com.example.mafia.models;
+package com.example.mafia.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,16 +11,23 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mafia.R;
+import com.example.mafia.models.GamePlace;
+import com.example.mafia.models.RoleModel;
+import com.example.mafia.network.NetworkUtils;
 
 import java.util.ArrayList;
 
-public class RolesRecycler extends RecyclerView.Adapter<RolesRecycler.Holder> {
+public class RolesAdapter extends RecyclerView.Adapter<RolesAdapter.Holder> {
     private ArrayList<RoleModel> mList;
     private Context mContext;
+    private NetworkUtils mUtils;
+    private GamePlace mGamePlace;
 
-    public RolesRecycler(Context context,ArrayList<RoleModel> list){
+    public RolesAdapter(Context context, ArrayList<RoleModel> list, GamePlace gamePlace){
         mList = list;
         mContext = context;
+        mUtils = new NetworkUtils(context);
+        mGamePlace = gamePlace;
     }
 
     @NonNull
@@ -32,9 +39,14 @@ public class RolesRecycler extends RecyclerView.Adapter<RolesRecycler.Holder> {
 
     @Override
     public void onBindViewHolder(@NonNull Holder holder, int position) {
-        holder.mRoleName.setText(mList.get(position).getRoleName());
+        if (mList.get(position).getId() == mGamePlace.getRole().getId()) {
+            holder.mRoleName.setText("Это Вы");
+        } else {
+            holder.mRoleName.setText(mList.get(position).getRoleName());
+        }
         holder.mRoleImage.setImageDrawable(mList.get(position).getRoleDrawable());
         holder.mRoleLetter.setText(mList.get(position).getRoleLetter());
+        holder.itemView.setOnClickListener((c) -> sendVote(mList.get(position)));
     }
 
     @Override
@@ -53,5 +65,9 @@ public class RolesRecycler extends RecyclerView.Adapter<RolesRecycler.Holder> {
             mRoleImage = itemView.findViewById(R.id.roleImage);
             mRoleLetter = itemView.findViewById(R.id.roleLetter);
         }
+    }
+
+    private void sendVote(RoleModel role){
+        mUtils.sendVote(mGamePlace.getRoom(),role.getId(),mGamePlace.getRole().getId());
     }
 }

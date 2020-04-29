@@ -1,7 +1,6 @@
 package com.example.mafia.fragments;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.mafia.R;
-import com.example.mafia.adpters.ShowRulesAdapter;
+import com.example.mafia.adapters.ShowRulesAdapter;
 
 public class Dialog_Showrules extends Fragment {
     private static final String TAG = Dialog_Showrules.class.getSimpleName();

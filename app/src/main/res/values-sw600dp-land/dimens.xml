@@ -1,7 +1,7 @@
 <resources>
 	<dimen name="border">6dp</dimen>
 	<dimen name="splash_progress_margin_horizontal">192dp</dimen>
-	<dimen name="splash_progress_margin_top">180dp</dimen>
+	<dimen name="splash_progress_margin_top">140dp</dimen>
 	<dimen name="learn_motivate_height">540dp</dimen>
 	<dimen name="margin_standart_top">60dp</dimen>
 	<dimen name="result_title_margin_top">120dp</dimen>

@@ -1,52 +1,45 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
+const Emitet = require('events');
 admin.initializeApp();
 
 
-
-
-
-
-exports.GetRoom = functions.https.onRequest(async (_req,res) => {
-   const rooms = await admin.firestore().collection('/Rooms').where('isBusy','==',false).get();
-   let myCount = 8;
-   let myRoom = "";
-   rooms.forEach(room => {
-    console.log("room path-> " + room.ref.path);
-    room.ref.collection('/Roles').where('isBusy','==',false).get()
-        .then(freeRoles => {
-            if(myCount > freeRoles.size && freeRoles.size != 0){
-                myCount = freeRoles.size;
-                myRoom = room.id;
-                return freeRoles;
-            } else {
-                console.log("variable wasn't update " + myCount);
-                return "noting";
-            }
-        }).then(freeRoles => {
-            if(myRoom != ""){        
-                freeRoles.query.where('isBusy','==',false).get().then(roles => {
-                var rand = 0;
-                if(roles.size >= 2) {
-                    rand = Math.floor(Math.random() * roles.size);
-                }
-                console.log("my room is " + myRoom  + " rand -> " + rand);
-                   i = 0;
-                   roles.forEach(role => {
-                       if(i == rand){
-                           res.send(role.data());
-                        }
-                        i++;
-                   });
-               });
-                
-            } else {
-                res.send("All rooms are busy");
-            }
-        });
+exports.FreedomVote = functions.https.onRequest(async (req, res) => {
+    var fieldRoom = req.body['Room'];
+    const rooms = await admin.firestore().collection('/Rooms/' + fieldRoom + "/Roles").get();
+    var countVote = 0;
+    var id = 0;
+    rooms.docs.forEach(target => {
+        if(countVote < target.data().VoicesAgainst) {
+            countVote = target.data().VoicesAgainst;
+            id = target.data().Id;
+            console.log("id: " + id);
+        }
     });
 
-    // function requestRole(freeRoles){
-   
-    // };
-});
+    let myEvent = new Emitet();
+    let myResponse = "result";
+    myEvent.on(myResponse,function(data) {
+      res.send(data);
+    });
+
+    rooms.forEach(kill => {
+        kill.ref.update("Voted",false);
+        kill.ref.update("VoicesAgainst",0);
+        if(kill.data().Id == id){
+         kill.ref.update("isDead",true);
+        }
+        if(countVote == 0) {
+          myEvent.emit(myResponse,'{"Result":"Voited nobody"}')
+        }
+    })
+    
+    rooms.query.where('Id','==',id).onSnapshot(personage => {
+      personage.docChanges().forEach(dead => {
+        if(dead.doc.data().isDead == true) {
+          console.log("log for dead " + JSON.stringify(dead.doc.data()));
+          myEvent.emit(myResponse,dead.doc.data());
+        }
+      })
+    })
+})

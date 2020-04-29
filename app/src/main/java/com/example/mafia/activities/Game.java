@@ -29,8 +29,7 @@ import com.example.mafia.interfaces.OnFinished;
 import com.example.mafia.models.ChatAdapter;
 import com.example.mafia.models.GameModel;
 import com.example.mafia.models.GamePlace;
-import com.example.mafia.models.RoleModel;
-import com.example.mafia.models.RolesRecycler;
+import com.example.mafia.adapters.RolesAdapter;
 import com.example.mafia.utils.FabricDialogs;
 import com.example.mafia.utils.SettingsUtils;
 import com.example.mafia.utils.TimerGame;
@@ -50,7 +49,7 @@ public class Game extends AppCompatActivity implements OnFinished {
     private EditText mEditLineMessage;
     private MaterialButton mSendMessage;
     private GameBinding mBinding;
-    private RolesRecycler mAdapter;
+    private RolesAdapter mAdapter;
     private RecyclerView mRecyclerRols;
     private LiveData<GamePlace> mGetRole;
     private Chronometer mTime;
@@ -68,8 +67,6 @@ public class Game extends AppCompatActivity implements OnFinished {
         setContentView(R.layout.game);
         setUp();
         mBinding.setModel(mModel);
-        //mModel.getRoom();
-        mModel.getFreePlace();
 
         mTime.setOnClickListener((c) -> mModel.resetRoles());
         mModel.getMessages().observe(this, chatModels -> {
@@ -81,20 +78,24 @@ public class Game extends AppCompatActivity implements OnFinished {
 
         mGetRole = mModel.getRole();
         mGetRole.observe(this, (role) -> {
-            mFrame = getSupportFragmentManager().beginTransaction().hide(mFragment);
-            mFrame.commit();
-            mModel.setActor(role.getRole().getRoleName());
-            mModel.setIdImage(role.getRole().getRoleDrawable());
-            mAnimation.animationRole(mModel, mMyRole).start();
-            mAnimation.addListener(changeAnimation);
-        });
-
-        mModel.getFreePlace().observe(this, integer -> {
-            if (integer == 0) {
-                findViewById(R.id.ShowDialog).setVisibility(View.GONE);
+            if (!role.getRoom().equals(getResources().getString(R.string.no_free_rooms))){
+                mFrame = getSupportFragmentManager().beginTransaction().hide(mFragment);
+                mFrame.commit();
+                mModel.setActor(role.getRole().getRoleName());
+                mModel.setIdImage(role.getRole().getRoleDrawable());
+                mAnimation.animationRole(mModel, mMyRole).start();
+                mAnimation.addListener(changeAnimation);
+                mModel.getPlayers(role.getRoom()).observe(this, roleModels -> {
+                    mAdapter = new RolesAdapter(this, roleModels,role);
+                    mRecyclerRols.setAdapter(mAdapter);
+                });
+            } else {
+                mFrame = getSupportFragmentManager().beginTransaction().hide(mFragment);
+                mFrame.commitNow();
+                Toast.makeText(getBaseContext(),"Свободных игроков нет",Toast.LENGTH_LONG).show();
             }
         });
-        mRecyclerRols.setAdapter(mAdapter);
+
 
         mSendMessage.setOnClickListener((c) -> {
             mModel.sendMessages(mEditLineMessage.getText().toString());
@@ -115,13 +116,12 @@ public class Game extends AppCompatActivity implements OnFinished {
         mRecyclerRols = findViewById(R.id.roleRecycler);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
         mRecyclerRols.setLayoutManager(layoutManager);
-        mAdapter = new RolesRecycler(this, mModel.getPlayers());
         mShowMessages = findViewById(R.id.show_messages);
         mShowMessages.setLayoutManager(new LinearLayoutManager(this));
         mEditLineMessage = findViewById(R.id.edit_line_message);
         mSendMessage = findViewById(R.id.send_message);
         mAnimation = new AnimationUtilsHelper(this);
-        timeGameCintroller(START);
+        timeGameController(START);
     }
 
     public void dialog_loader() {
@@ -131,14 +131,20 @@ public class Game extends AppCompatActivity implements OnFinished {
     }
 
     @MainThread
-    private void leavePalyers() {
+    private void leavePlayers() {
         mMyRole.setVisibility(View.GONE);
         mFrame = getSupportFragmentManager().beginTransaction();
-        mFrame.replace(R.id.ShowDialog, mModel.getDialog(FabricDialogs.CODE_DIALOG_SHOW_RULES)).commit();
+        mFrame.replace(R.id.ShowDialog, mModel.getDialog(FabricDialogs.CODE_DIALOG_FREEPLACE)).commit();
         Toast.makeText(getBaseContext(), mModel.getActor(), Toast.LENGTH_LONG).show();
+        mModel.getFreePlace(mGetRole.getValue().getRoom()).observe(this, integer -> {
+            if (integer == 0) {
+                mFrame = getSupportFragmentManager().beginTransaction();
+                mFrame.replace(R.id.ShowDialog, mModel.getDialog(FabricDialogs.CODE_DIALOG_SHOW_RULES)).commit();
+            }
+        });
     }
 
-    public void timeGameCintroller(Integer code) {
+    public void timeGameController(Integer code) {
         mTimeGame = new TimerGame(mTime, this);
         mTimeGame.finalCountDown(this);
         switch (code) {
@@ -177,7 +183,7 @@ public class Game extends AppCompatActivity implements OnFinished {
                 while (true) {
                     if (!animation.isRunning()) break;
                 }
-                mHandler.postDelayed(() -> leavePalyers(), getResources().getInteger(R.integer.flip_duration_half));
+                mHandler.postDelayed(() -> leavePlayers(), getResources().getInteger(R.integer.flip_duration_half));
             }).start();
 
         }

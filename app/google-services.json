@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "602212304953-ulm4c5e7r3eqnnks2t79cuvl661c7fe5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mafia.free",
+            "certificate_hash": "3e74cabd95773543d9429132e9a133a22d5dd972"
+          }
+        },
+        {
           "client_id": "602212304953-uv4l2ihp70rovnlvts6dobum20e4mg27.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -29,7 +37,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBshmUYuD3PWAReAT-F2ZLsxzpamI_htr4"
+          "current_key": "AIzaSyAiMuEZ2zr0iCyAuijOygBbrgnxPo129L8"
         }
       ],
       "services": {

@@ -24,8 +24,8 @@ public class Dialog_Freeplace extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.freeplacedialog,null,false);
         mFirestoreDB = FireStoreDB.getInstance(view.getContext());
-        LiveData<Integer> d = mFirestoreDB.getFreePlace();
-        d.observe(this,(integer -> {
+        LiveData<Integer> freePlace = mFirestoreDB.getFreePlace(mFirestoreDB.getRoom());
+        freePlace.observe(this,(integer -> {
             if (integer != 0) {
                 ((TextView) view.findViewById(R.id.free_count)).setText(String.format(getString(R.string.count_free_place), integer));
             } else {

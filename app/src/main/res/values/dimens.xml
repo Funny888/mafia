@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="splash_image_size">140dp</dimen>
+    <dimen name="splash_image_size">120dp</dimen>
     <dimen name="splash_image_margin_top">40dp</dimen>
-    <dimen name="splash_progress_margin_top">60dp</dimen>
+    <dimen name="splash_progress_margin_top">40dp</dimen>
     <dimen name="splash_progress_margin_horizontal">64dp</dimen>
     <dimen name="learn_motivate_width">120dp</dimen>
     <dimen name="learn_motivate_height">180dp</dimen>

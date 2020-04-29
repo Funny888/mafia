@@ -41,6 +41,7 @@ public class ResultAdapter extends BaseAdapter {
             view = LayoutInflater.from(mContext).inflate(R.layout.rezult_item,viewGroup,false);
         }
 
+
         ((TextView)view.findViewById(R.id.item_actor)).setText(mList.get(i).getRole());
         ((TextView)view.findViewById(R.id.item_count)).setText(String.valueOf(mList.get(i).getGames()));
         ((TextView)view.findViewById(R.id.item_time)).setText(String.valueOf(mList.get(i).getTime()));

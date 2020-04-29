@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class GamePlace {
     @Expose
-    @SerializedName("RooomIs")
+    @SerializedName("RoomIs")
     private String Room;
 
     @Expose
