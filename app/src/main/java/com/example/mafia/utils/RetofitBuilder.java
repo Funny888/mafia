@@ -66,4 +66,13 @@ public class RetofitBuilder {
                 build();
         return mRetrofit.create(IGetEvents.class);
     }
+
+    public IGetEvents startGame() {
+        mRetrofit = new Retrofit.Builder().
+                baseUrl(BASE_URL).
+                addConverterFactory(GsonConverterFactory.create()).
+                client(mOk).
+                build();
+        return mRetrofit.create(IGetEvents.class);
+    }
 }

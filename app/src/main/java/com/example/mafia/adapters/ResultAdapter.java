@@ -1,4 +1,4 @@
-package com.example.mafia.models;
+package com.example.mafia.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.mafia.R;
+import com.example.mafia.models.StatisticModel;
 
 import java.util.List;
 

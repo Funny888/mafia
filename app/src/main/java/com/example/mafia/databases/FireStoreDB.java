@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 
@@ -14,12 +15,20 @@ import com.example.mafia.utils.MyObserver;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+
+import com.google.firebase.firestore.MetadataChanges;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import static com.example.mafia.utils.Logger.PTAG;
 
 public class FireStoreDB {
     public static final String TAG = FireStoreDB.class.getSimpleName();
@@ -82,19 +91,20 @@ public class FireStoreDB {
     public String getRoom(){
         return mRoom;
     }
-
     public MutableLiveData<Integer> getFreePlace(String room) {
         mRoom = room;
-        reference.document(room).get().addOnSuccessListener(documentSnapshot -> {
-            documentSnapshot.getReference().collection(Roles).addSnapshotListener((queryDocumentSnapshots, FirebaseFirestoreException) -> {
-                int free = queryDocumentSnapshots.size();
-                for (QueryDocumentSnapshot query : queryDocumentSnapshots) {
-                    if (query.getBoolean(isBusy))
-                        free--;
-                }
+        ListenerRegistration registration = reference.document(room).collection(Roles).
+                whereEqualTo(isBusy,false).addSnapshotListener(MetadataChanges.EXCLUDE,
+                (queryDocumentSnapshots, FirebaseFirestoreException) -> {
+            Log.d(TAG, "getFreePlace: changes documents " + queryDocumentSnapshots.
+                    getDocumentChanges().size());
+            int free = queryDocumentSnapshots.size();
+
+                Log.d(PTAG, TAG + "@getFreePlace: free places is " + free);
                 mFreePlace.postValue(free);
+
             });
-        });
+        //registration.remove();
         return mFreePlace;
     }
 }

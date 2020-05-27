@@ -2,7 +2,9 @@ package com.example.mafia.models;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.Bindable;
@@ -14,6 +16,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.mafia.animations.AnimationUtilsHelper;
 import com.example.mafia.databases.FireStoreDB;
 import com.example.mafia.network.NetworkUtils;
 import com.example.mafia.utils.FabricDialogs;
@@ -21,10 +24,12 @@ import com.example.mafia.utils.FabricDialogs;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.mafia.utils.Logger.PTAG;
+
 
 public class GameModel extends AndroidViewModel implements Observable {
 
-    public static final String TAG = GameModel.class.getSimpleName();
+    public static final String TAG = "GameModel";
 
     private transient PropertyChangeRegistry mCallbacks;
 
@@ -38,10 +43,15 @@ public class GameModel extends AndroidViewModel implements Observable {
     private FireStoreDB mDatabase;
     private FabricDialogs fabricDialogs = new FabricDialogs();
     private NetworkUtils networkUtils;
+    private String mRoom;
+    private AnimationUtilsHelper mAnimation;
+    private MutableLiveData<ArrayList<RoleModel>> mTest;
+    private MutableLiveData<GamePlace> mLiveDataRole;
 
 
     public GameModel(@NonNull Application application) {
         super(application);
+        Log.i(PTAG,TAG + "@GameModel: constructor");
         mContext = getApplication();
         networkUtils = new NetworkUtils(mContext);
         mDatabase = FireStoreDB.getInstance(mContext);
@@ -76,6 +86,7 @@ public class GameModel extends AndroidViewModel implements Observable {
     }
 
     public void setActor(String actor) {
+        Log.i(PTAG,TAG + "@setActor: actor is " + actor);
         mActor = actor;
         notifyPropertyChanged(BR.actor);
     }
@@ -86,6 +97,7 @@ public class GameModel extends AndroidViewModel implements Observable {
     }
 
     public void setIsShowRole(Boolean show) {
+        Log.i(PTAG,TAG + "@setIsShowRole: show role is " + show);
         mIsShowRole = show;
         notifyPropertyChanged(BR.isShowRole);
     }
@@ -96,6 +108,7 @@ public class GameModel extends AndroidViewModel implements Observable {
     }
 
     public void setShowCardRole(Boolean show) {
+        Log.i(PTAG,TAG + "@setShowCardRole: show card role is " + show);
         mIsShowCardRole = show;
         notifyPropertyChanged(BR.showCardRole);
     }
@@ -116,6 +129,7 @@ public class GameModel extends AndroidViewModel implements Observable {
     }
 
     public void setIsShowPlayers(Boolean show) {
+        Log.i(PTAG,TAG + "@setIsShowPlayers: show players is " + show);
         mIsShowPlayers = show;
         notifyPropertyChanged(BR.isShowPlayers);
     }
@@ -126,6 +140,7 @@ public class GameModel extends AndroidViewModel implements Observable {
     }
 
     public void setBackImage(Boolean show) {
+        Log.i(PTAG,TAG + "@setBackImage: show back image is " + show);
         mBackImage = show;
         notifyPropertyChanged(BR.backImage);
     }
@@ -146,19 +161,31 @@ public class GameModel extends AndroidViewModel implements Observable {
     }
 
     public LiveData<GamePlace> getRole() {
-        return networkUtils.getRole();
+//        if (mLiveDataRole == null) {
+            Log.i(PTAG, TAG + "@getRole: ");
+            mLiveDataRole = new MutableLiveData<>();
+            mLiveDataRole = networkUtils.getRole();
+//        }
+        return mLiveDataRole;
     }
 
-    public LiveData<Integer> getFreePlace(String room) {
-
+    public MutableLiveData<Integer> getFreePlace(String room) {
+        Log.i(PTAG,TAG + "@getFreePlace: room is " + room);
+        mRoom = room;
         return mDatabase.getFreePlace(room);
     }
 
     public MutableLiveData<ArrayList<RoleModel>> getPlayers(String room) {
-        return networkUtils.getAllPlayers(room);
+        if (mTest == null) {
+            Log.i(PTAG, TAG + "@getPlayers: room is " + room);
+            mTest = new MutableLiveData<>();
+            mTest = networkUtils.getAllPlayers(room);
+        }
+        return mTest;
     }
 
     public Fragment getDialog(int code) {
+        Log.i(PTAG,TAG + "@getDialog: code is " + code);
         return fabricDialogs.getDialog(code);
     }
 
@@ -170,4 +197,16 @@ public class GameModel extends AndroidViewModel implements Observable {
         networkUtils.sendMessage(getRole().getValue().getRole().getRoleName(), message);
     }
 
+    public MutableLiveData<Boolean> startGame() {
+        return networkUtils.startGame(mRoom);
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        fabricDialogs = null;
+        mContext = null;
+        networkUtils = null;
+        mDatabase = null;
+    }
 }

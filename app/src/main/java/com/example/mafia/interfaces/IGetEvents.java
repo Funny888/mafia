@@ -2,6 +2,7 @@ package com.example.mafia.interfaces;
 
 import com.example.mafia.models.ChatModel;
 import com.example.mafia.models.GamePlace;
+import com.example.mafia.models.ResponseApi;
 import com.example.mafia.models.RoleModel;
 import com.google.gson.JsonObject;
 
@@ -29,4 +30,8 @@ public interface IGetEvents {
     @POST("/SendVote")
     @FormUrlEncoded
     Call<JsonObject> sendVote(@Field("Room") String room, @Field("TargetId") Long targetId, @Field("MyId") Long myId);
+
+    @POST("/StartGame")
+    @FormUrlEncoded
+    Call<ResponseApi> startGame(@Field("Room") String room);
 }

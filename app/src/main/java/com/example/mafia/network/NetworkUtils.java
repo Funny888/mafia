@@ -1,6 +1,7 @@
 package com.example.mafia.network;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.widget.Toast;
@@ -12,6 +13,7 @@ import com.example.mafia.interfaces.IGetEvents;
 import com.example.mafia.interfaces.ISendMessages;
 import com.example.mafia.models.ChatModel;
 import com.example.mafia.models.GamePlace;
+import com.example.mafia.models.ResponseApi;
 import com.example.mafia.models.RoleModel;
 import com.example.mafia.utils.Logger;
 import com.example.mafia.utils.RetofitBuilder;
@@ -30,6 +32,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
 import static com.example.mafia.utils.Logger.PTAG;
 
@@ -44,6 +47,7 @@ public class NetworkUtils {
     private MutableLiveData<List<ChatModel>> getMessages = new MutableLiveData<>();
     private MutableLiveData<GamePlace> getRole = new MutableLiveData<>();
     private MutableLiveData<ArrayList<RoleModel>> getAllPlayers = new MutableLiveData<>();
+    private MutableLiveData<Boolean> mIsStarted = new MutableLiveData<>();
 
     public NetworkUtils(Context context){ mContext = context;}
 
@@ -127,6 +131,7 @@ public class NetworkUtils {
                         model.setRoleDrawable(getImageRole(model.getRoleName()));
                         model.setRoleLetter("player " + model.getId());
                     }
+                    Log.i(PTAG,TAG +  "@getAllPlayers@onResponse: player " + list.toArray());
                     getAllPlayers.postValue(list);
                 }
 
@@ -157,5 +162,24 @@ public class NetworkUtils {
 
             }
         });
+    }
+
+    public MutableLiveData<Boolean> startGame(String room) {
+        IGetEvents start = new RetofitBuilder().startGame();
+        start.startGame(room).enqueue(new Callback<ResponseApi>() {
+            @Override
+            public void onResponse(Call<ResponseApi> call, Response<ResponseApi> response) {
+                Log.d(PTAG,TAG + "@onResponse: " + response.body().getResult());
+                mIsStarted.postValue(response.body().getResult().equals("Start game"));
+                Log.d(PTAG,TAG + "@onResponse: result is " + response.body().getResult().equals("Start game"));
+            }
+
+            @Override
+            public void onFailure(Call<ResponseApi> call, Throwable t) {
+                Log.d(PTAG,TAG + "@onFailure: ooops", t);
+            }
+        });
+
+        return mIsStarted;
     }
 }

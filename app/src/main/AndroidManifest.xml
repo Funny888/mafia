@@ -25,6 +25,11 @@
             </intent-filter>
         </activity>
 
+        <service android:name=".services.GameProcessService">
+            <intent-filter>
+                <action android:name="mafia.intent.PART_GAME"/>
+            </intent-filter>
+        </service>
     </application>
 
 

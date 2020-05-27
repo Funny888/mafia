@@ -3,6 +3,7 @@ package com.example.mafia.utils;
 public class SettingsUtils {
     private static SettingsUtils mInstance;
     private static Long mBase;
+    private static Integer mRounds = 5;
 
     private SettingsUtils(){}
 
@@ -19,8 +20,16 @@ public class SettingsUtils {
 
     public Long getTimeBase(){
         if (mBase == null) {
-            mBase = 0l;
+            mBase = 0L;
         }
         return mBase;
+    }
+
+    public void setRounds(Integer rounds) {
+        mRounds = rounds;
+    }
+
+    public Integer getRounds() {
+        return mRounds;
     }
 }

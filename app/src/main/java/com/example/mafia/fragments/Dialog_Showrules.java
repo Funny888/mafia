@@ -14,7 +14,7 @@ import com.example.mafia.R;
 import com.example.mafia.adapters.ShowRulesAdapter;
 
 public class Dialog_Showrules extends Fragment {
-    private static final String TAG = Dialog_Showrules.class.getSimpleName();
+    private static final String TAG = "Dialog_Showrules";
     private ViewPager2 mPager;
     private ShowRulesAdapter mAdapter;
 

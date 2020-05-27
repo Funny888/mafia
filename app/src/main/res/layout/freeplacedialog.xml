@@ -19,7 +19,8 @@
             android:gravity="center"
             android:padding="10dp"
             android:text="@string/count_free_place"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            android:textColor="@color/colorAccent"/>
     </LinearLayout>
 
 

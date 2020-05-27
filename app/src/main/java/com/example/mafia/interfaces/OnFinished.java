@@ -1,5 +1,5 @@
 package com.example.mafia.interfaces;
 
 public interface OnFinished {
-    void isFinish(Boolean bool);
+    void isFinish(Boolean bool, Integer code);
 }

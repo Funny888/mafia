@@ -1,30 +1,22 @@
 package com.example.mafia.view;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.mafia.R;
 import com.example.mafia.databases.RepositoryDB;
 import com.example.mafia.databinding.FragmentResultBinding;
-import com.example.mafia.interfaces.StatisticDao;
-import com.example.mafia.models.ResultAdapter;
-import com.example.mafia.models.StatisticModel;
+import com.example.mafia.adapters.ResultAdapter;
 import com.example.mafia.viewmodels.ResultViewModel;
-
-import java.util.List;
 
 
 public class ResultFragment extends Fragment {
