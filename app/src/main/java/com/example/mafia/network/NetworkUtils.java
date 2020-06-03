@@ -1,7 +1,6 @@
 package com.example.mafia.network;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.widget.Toast;
@@ -9,20 +8,18 @@ import android.widget.Toast;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.mafia.R;
+import com.example.mafia.interfaces.DaggerIRetrofitBuilder;
 import com.example.mafia.interfaces.IGetEvents;
+import com.example.mafia.interfaces.IRetrofitBuilder;
 import com.example.mafia.interfaces.ISendMessages;
 import com.example.mafia.models.ChatModel;
 import com.example.mafia.models.GamePlace;
 import com.example.mafia.models.ResponseApi;
 import com.example.mafia.models.RoleModel;
-import com.example.mafia.utils.Logger;
 import com.example.mafia.utils.RetofitBuilder;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.JsonObject;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -32,7 +29,6 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
 import static com.example.mafia.utils.Logger.PTAG;
 
@@ -43,13 +39,20 @@ public class NetworkUtils {
     private Context mContext;
     private FirebaseFirestore mDatabase = FirebaseFirestore.getInstance();
     private CollectionReference mReference = mDatabase.collection(Collection);
+    private IGetEvents mIGetEvents;
 
     private MutableLiveData<List<ChatModel>> getMessages = new MutableLiveData<>();
     private MutableLiveData<GamePlace> getRole = new MutableLiveData<>();
     private MutableLiveData<ArrayList<RoleModel>> getAllPlayers = new MutableLiveData<>();
     private MutableLiveData<Boolean> mIsStarted = new MutableLiveData<>();
+    private MutableLiveData<Integer> mIsStopped = new MutableLiveData<>();
+    private MutableLiveData<RoleModel> mHowIsDead = new MutableLiveData<>();
 
-    public NetworkUtils(Context context){ mContext = context;}
+    public NetworkUtils(Context context){
+        mContext = context;
+        IRetrofitBuilder daggerRetrofitBuilder = DaggerIRetrofitBuilder.builder().build();
+        mIGetEvents = daggerRetrofitBuilder.getIGetEvents();
+    }
 
     public void sendMessage(String name, String message) {
         ChatModel model = new ChatModel();
@@ -78,8 +81,7 @@ public class NetworkUtils {
     }
 
     public MutableLiveData<GamePlace> getRole(){
-        IGetEvents role = new RetofitBuilder().getRole();
-        role.getGamePlace().enqueue(new Callback<GamePlace>() {
+        mIGetEvents.getGamePlace().enqueue(new Callback<GamePlace>() {
             @Override
             public void onResponse(Call<GamePlace> call, Response<GamePlace> response) {
                 GamePlace role = response.body();
@@ -121,9 +123,8 @@ public class NetworkUtils {
     }
 
     public MutableLiveData<ArrayList<RoleModel>> getAllPlayers(String room){
-        IGetEvents players = new RetofitBuilder().getPlayers();
         try {
-            players.getAllPlayers(room).enqueue(new Callback<ArrayList<RoleModel>>() {
+            mIGetEvents.getAllPlayers(room).enqueue(new Callback<ArrayList<RoleModel>>() {
                 @Override
                 public void onResponse(Call<ArrayList<RoleModel>> call, Response<ArrayList<RoleModel>> response) {
                     ArrayList<RoleModel> list = response.body();
@@ -148,8 +149,7 @@ public class NetworkUtils {
     }
 
     public void sendVote(String room, Long target, Long myId){
-        IGetEvents sendVote = new RetofitBuilder().sendVoted();
-        sendVote.sendVote(room,target,myId).enqueue(new Callback<JsonObject>() {
+        mIGetEvents.sendVote(room,target,myId).enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                     String result = response.body().get("Result").getAsString();
@@ -165,21 +165,57 @@ public class NetworkUtils {
     }
 
     public MutableLiveData<Boolean> startGame(String room) {
-        IGetEvents start = new RetofitBuilder().startGame();
-        start.startGame(room).enqueue(new Callback<ResponseApi>() {
+        mIGetEvents.startGame(room).enqueue(new Callback<ResponseApi>() {
             @Override
             public void onResponse(Call<ResponseApi> call, Response<ResponseApi> response) {
-                Log.d(PTAG,TAG + "@onResponse: " + response.body().getResult());
+                Log.d(PTAG,TAG + "@startGame@onResponse: " + response.body().getResult());
                 mIsStarted.postValue(response.body().getResult().equals("Start game"));
-                Log.d(PTAG,TAG + "@onResponse: result is " + response.body().getResult().equals("Start game"));
+                Log.d(PTAG,TAG + "@startGame@onResponse: result is " + response.body().getResult().equals("Start game"));
             }
 
             @Override
             public void onFailure(Call<ResponseApi> call, Throwable t) {
-                Log.d(PTAG,TAG + "@onFailure: ooops", t);
+                Log.d(PTAG,TAG + "@startGame@onFailure: ooops", t);
             }
         });
 
         return mIsStarted;
+    }
+
+    public MutableLiveData<Integer> stopGame(String room, Integer flag) {
+        mIGetEvents.stopGame(room, flag).enqueue(new Callback<ResponseApi>() {
+            @Override
+            public void onResponse(Call<ResponseApi> call, Response<ResponseApi> response) {
+                String resp = response.body().getResult();
+                Log.d(PTAG,TAG + "@startGame@onResponse: " + resp);
+                mIsStopped.postValue(Integer.parseInt(resp.subSequence(resp.length() - 1, resp.length()).toString()));
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseApi> call, Throwable t) {
+                Log.d(PTAG,TAG + "@stopGame@onFailure: ooops", t);
+            }
+        });
+
+        return mIsStopped;
+    }
+
+    public MutableLiveData<RoleModel> howIsDead(String room) {
+        mIGetEvents.whoIsDead(room).enqueue(new Callback<RoleModel>() {
+            @Override
+            public void onResponse(Call<RoleModel> call, Response<RoleModel> response) {
+                RoleModel roleModel =  response.body();
+                Log.d(PTAG,TAG + "@howIsDead@onResponse: " + roleModel.toString());
+                mHowIsDead.postValue(roleModel);
+            }
+
+            @Override
+            public void onFailure(Call<RoleModel> call, Throwable t) {
+
+            }
+        });
+
+        return mHowIsDead;
     }
 }

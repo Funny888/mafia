@@ -2,6 +2,8 @@ package com.example.mafia.models;
 
 import android.graphics.drawable.Drawable;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -107,5 +109,14 @@ public class RoleModel {
 
     public void setmVoted(Boolean mVoted) {
         this.mVoted = mVoted;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "{" + mId + " " + mRoleName + " " +
+                mIsBusy + " " + mIsDead + " " +
+                mRoleDrawable + " " + mRoleLetter + " " +
+                mVoicesAgainst + " " + mVoted + "}";
     }
 }

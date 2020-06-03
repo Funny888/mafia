@@ -34,4 +34,12 @@ public interface IGetEvents {
     @POST("/StartGame")
     @FormUrlEncoded
     Call<ResponseApi> startGame(@Field("Room") String room);
+
+    @POST("/PartAndStopGame")
+    @FormUrlEncoded
+    Call<ResponseApi> stopGame(@Field("Room") String room, @Field("Flag") Integer flag);
+
+    @POST("/FreedomVote")
+    @FormUrlEncoded
+    Call<RoleModel> whoIsDead(@Field("Room") String room);
 }

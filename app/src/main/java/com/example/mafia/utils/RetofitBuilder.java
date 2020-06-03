@@ -20,59 +20,23 @@ public class RetofitBuilder {
         mOk = new OkHttpClient.Builder().
                 addInterceptor(loggingInterceptor).
                 build();
+        buildRetrofit();
     }
 
-    public IGetEvents getMessages() {
+    public Retrofit buildRetrofit(){
         mRetrofit = new Retrofit.Builder().
                 baseUrl(BASE_URL).
                 client(mOk).
                 addConverterFactory(GsonConverterFactory.create()).
                 build();
-        return mRetrofit.create(IGetEvents.class);
+        return mRetrofit;
     }
 
     public ISendMessages SendMessage() {
-        mRetrofit = new Retrofit.Builder().
-                baseUrl(BASE_URL).
-                client(mOk).
-                addConverterFactory(GsonConverterFactory.create()).
-                build();
         return mRetrofit.create(ISendMessages.class);
     }
 
     public IGetEvents getRole(){
-        mRetrofit = new Retrofit.Builder().
-                baseUrl(BASE_URL).
-                client(mOk).
-                addConverterFactory(GsonConverterFactory.create()).
-                build();
         return  mRetrofit.create(IGetEvents.class);
-    }
-
-    public IGetEvents getPlayers(){
-        mRetrofit = new Retrofit.Builder().
-                baseUrl(BASE_URL).
-                client(mOk).
-                addConverterFactory(GsonConverterFactory.create()).
-                build();
-        return  mRetrofit.create(IGetEvents.class);
-    }
-
-    public IGetEvents sendVoted(){
-                mRetrofit = new Retrofit.Builder().
-                baseUrl(BASE_URL).
-                client(mOk).
-                addConverterFactory(GsonConverterFactory.create()).
-                build();
-        return mRetrofit.create(IGetEvents.class);
-    }
-
-    public IGetEvents startGame() {
-        mRetrofit = new Retrofit.Builder().
-                baseUrl(BASE_URL).
-                addConverterFactory(GsonConverterFactory.create()).
-                client(mOk).
-                build();
-        return mRetrofit.create(IGetEvents.class);
     }
 }

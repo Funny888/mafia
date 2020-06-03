@@ -2,14 +2,9 @@ package com.example.mafia.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.content.ComponentName;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Looper;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -19,27 +14,24 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.MainThread;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mafia.R;
+import com.example.mafia.adapters.RolesAdapter;
 import com.example.mafia.animations.AnimationUtilsHelper;
 import com.example.mafia.databinding.GameBinding;
-import com.example.mafia.fragments.Dialog_Freeplace;
 import com.example.mafia.interfaces.OnFinished;
 import com.example.mafia.models.ChatAdapter;
 import com.example.mafia.models.GameModel;
 import com.example.mafia.models.GamePlace;
-import com.example.mafia.adapters.RolesAdapter;
 import com.example.mafia.utils.FabricDialogs;
 import com.example.mafia.utils.SettingsUtils;
 import com.example.mafia.utils.TimerGame;
@@ -105,6 +97,7 @@ public class Game extends AppCompatActivity implements OnFinished {
                     Log.d(PTAG, TAG + "@onCreate: get players 2");
                     mAdapter = new RolesAdapter(Game.this, roleModels,role);
                     mRecyclerRols.setAdapter(mAdapter);
+
                 });
             } else {
                 mFrame = getSupportFragmentManager().beginTransaction().hide(mFragment);
@@ -125,12 +118,10 @@ public class Game extends AppCompatActivity implements OnFinished {
         mBinding = DataBindingUtil.setContentView(this, R.layout.game);
         mBinding.setLifecycleOwner(this);
         mModel = ViewModelProviders.of(this).get(GameModel.class);
-
-
         dialog_loader();
         mTime = findViewById(R.id.time_the_game);
         mTimeGame = new TimerGame(mTime, this);
-        mTimeGame.resume();
+        timeGameController(RESUME,null);
         mMyRole = findViewById(R.id.card_role);
         mRecyclerRols = findViewById(R.id.roleRecycler);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
@@ -158,10 +149,7 @@ public class Game extends AppCompatActivity implements OnFinished {
                     Log.d(PTAG, TAG + "@leavePlayers: haven't free places");
                     mFrame = getSupportFragmentManager().beginTransaction();
                     mFrame.replace(R.id.ShowDialog, mModel.getDialog(FabricDialogs.CODE_DIALOG_SHOW_RULES)).commit();
-                    mModel.startGame().observe(this,aBoolean -> {
-                        if (aBoolean)
-                            timeGameController(START,TimerGame.TIME_WAITING);
-                    });
+                    timeGameController(START,TimerGame.TIME_WAITING);
                 } else {
                     Log.d(PTAG, TAG + "@leavePlayers: leave free places = " + integer);
                     mFragment = mModel.getDialog(FabricDialogs.CODE_DIALOG_FREEPLACE);
@@ -200,14 +188,58 @@ public class Game extends AppCompatActivity implements OnFinished {
 
         mTimeGame.stop();
         SettingsUtils.getInstance().setTimeBase(mTimeGame.getmChronometer().getBase());
-       // mFrame = null;
         mHandler.removeCallbacks(null);
         changeAnimation = null;
     }
 
     @Override
     public void isFinish(Boolean bool, Integer code) {
-        mModel.setIsShowPlayers(bool);
+        switch (code) {
+            case TimerGame.CODE_ROUND: {
+                timeGameController(START, TimerGame.TIME_VOTING);
+                mModel.setIsShowPlayers(bool);
+                Log.i(PTAG, TAG + "@isFinish: code round");
+                break;
+            }
+            case TimerGame.CODE_WAIT: {
+                mModel.startGame().observe(this,aBoolean -> {
+                    if (aBoolean)
+                        timeGameController(START, TimerGame.TIME_ROUND);
+                });
+                Log.i(PTAG, TAG + "@isFinish: code wait");
+                break;
+            }
+            case TimerGame.CODE_VOTE: {
+                mModel.showIsDead().observe(this, roleModel -> {
+                    mAdapter.removeRole(roleModel);
+                    mAdapter.notifyDataSetChanged();
+
+                    Toast.makeText(Game.this, roleModel.getRoleName() + " мертв",Toast.LENGTH_LONG).show();
+                    //TODO Need make that animation was realize via role model
+                   // mAnimation.animationRole(roleModel, mMyRole).start();
+                });
+                mModel.stopGame(1).observe(this, integer -> {
+                    SettingsUtils.getInstance().setRounds(integer);
+                    timeGameController(START, TimerGame.TIME_ROUND);
+                    Log.i(PTAG, TAG + "@isFinish: code vote - integer " + integer);
+                });
+                mModel.setIsShowPlayers(bool);
+
+                break;
+            }
+            case TimerGame.CODE_FINISH: {
+//                mModel.stopGame(-1).observe(this, integer -> {
+//                    SettingsUtils.getInstance().setRounds(integer);
+//                    Toast.makeText(this,"Game the over, rounds are " + SettingsUtils.getInstance().getRounds() ,Toast.LENGTH_LONG).show();
+//                    Log.i(PTAG, TAG + "@isFinish: code finish - integer " + integer);
+//                });
+                break;
+            }
+            default:
+                Log.i(PTAG, TAG + "@isFinish: unknown code " + code);
+        }
+
+
     }
 
     AnimatorListenerAdapter changeAnimation = new AnimatorListenerAdapter() {

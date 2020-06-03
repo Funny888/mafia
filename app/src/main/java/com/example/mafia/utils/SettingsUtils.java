@@ -5,6 +5,9 @@ public class SettingsUtils {
     private static Long mBase;
     private static Integer mRounds = 5;
 
+
+    private static boolean mVote = false;
+
     private SettingsUtils(){}
 
     public static SettingsUtils getInstance() {
@@ -31,5 +34,13 @@ public class SettingsUtils {
 
     public Integer getRounds() {
         return mRounds;
+    }
+
+    public boolean isVote() {
+        return mVote;
+    }
+
+    public void setVote(boolean vote) {
+        mVote = vote;
     }
 }

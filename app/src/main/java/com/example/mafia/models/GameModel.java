@@ -201,6 +201,14 @@ public class GameModel extends AndroidViewModel implements Observable {
         return networkUtils.startGame(mRoom);
     }
 
+    public MutableLiveData<Integer> stopGame(Integer flag) {
+        return networkUtils.stopGame(mRoom, flag);
+    }
+
+    public MutableLiveData<RoleModel> showIsDead() {
+        return networkUtils.howIsDead(mRoom);
+    }
+
     @Override
     protected void onCleared() {
         super.onCleared();

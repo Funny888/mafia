@@ -1,6 +1,7 @@
 package com.example.mafia.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import com.example.mafia.models.RoleModel;
 import com.example.mafia.network.NetworkUtils;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class RolesAdapter extends RecyclerView.Adapter<RolesAdapter.Holder> {
     private ArrayList<RoleModel> mList;
@@ -67,7 +69,20 @@ public class RolesAdapter extends RecyclerView.Adapter<RolesAdapter.Holder> {
         }
     }
 
+    public void removeRole(RoleModel role) {
+        Iterator<RoleModel> iterator = mList.iterator();
+        while (iterator.hasNext()) {
+            RoleModel model = iterator.next();
+            if (model.getId().equals(role.getId()))
+                iterator.remove();
+        }
+        Log.d("TAG_MAF", "removeRole: " + mList.size());
+    }
+
+
     private void sendVote(RoleModel role){
         mUtils.sendVote(mGamePlace.getRoom(),role.getId(),mGamePlace.getRole().getId());
     }
+
+
 }
